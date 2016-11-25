@@ -204,7 +204,7 @@ eventEmitter.on('generate', function () {
     }
     xml +=  "</articles>";
 
-    fs.writeFile("assets/lisa_linetoday.xml",xml,function(err){
+    fs.writeFile("./public/lisa_linetoday.xml",xml,function(err){
         if(err){
             return console.log(err);
         }
