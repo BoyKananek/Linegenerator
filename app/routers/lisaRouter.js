@@ -9,7 +9,6 @@ var async = require('async');
 var waitUntil = require('wait-until');
 
 var eventEmitter = new events.EventEmitter();
-
 //main content
 /*
     //POST METHOD
@@ -101,7 +100,7 @@ router.post('/generateContent', function (req, res) {
             }
         })
 
-        console.log("Request for recommended 1 in content " + i);
+       
         request(url_re1[i], function (err, res, html) {
             if (!err) {
                 var $ = cheerio.load(html);
@@ -119,7 +118,7 @@ router.post('/generateContent', function (req, res) {
         });
 
         //recommended2
-        console.log("Request for recommended 2 in content " + i);
+        
 
         request(url_re2[i], function (err, res, html) {
             if (!err) {
@@ -138,7 +137,7 @@ router.post('/generateContent', function (req, res) {
         });
 
         //recommended3
-        console.log("Request for recommended 3 in content " + i);
+        
 
         request(url_re3[i], function (err, res, html) {
             if (!err) {
@@ -174,50 +173,43 @@ router.post('/generateContent', function (req, res) {
 
 
 eventEmitter.on('generate', function () {
-    console.log('Call');
-    /*xml = "<?xml version='1.0' encoding='UTF-8' ?><articles><UUID>";
-        xml += xml + rand;
-        xml += xml + "</UUID><time>"
-        xml += xml + currentTime + "</time>"; */
-
+    xml = "<?xml version='1.0' encoding='UTF-8' ?><articles><UUID>";
+        xml +=   rand;
+        xml +=   "</UUID><time>";
+        xml +=   currentTime.toString() + "</time>"; 
+ 
     for (var i = 0; i < list.length; i++) {
-        console.log("This is the " + i + " article");
-        console.log(urls[i]);
-        console.log(shortlinks[i]);
-        console.log(titles[i]);
-        console.log(categories[i]);
-        console.log(images[i]);
-        //console.log(contents[i]);
-
-        console.log("Recommened Article");
-        console.log(url_re1[i]);
-        console.log(title_re1[i]);
-        console.log(image_re1[i]);
-        console.log(url_re2[i]);
-        console.log(title_re2[i]);
-        console.log(image_re2[i]);
-        console.log(url_re3[i]);
-        console.log(title_re3[i]);
-        console.log(image_re3[i]);
+        xml +=  "<article>";
+        xml +=   "<ID>"+shortlinks[i]+"</ID>";
+        xml +=   "<nativeCountry>TH</nativeCountry><language>th</language><publishCountries><country>TH</country></publishCountries";
+        var time = currentTime-(360000 * (i+1));
+        xml +=   "<startYmdtUnix>"+time.toString()+"</startYmdtUnix><endYmdtUnix>7274196000000</endYmdtUnix>"
+        xml +=   "<title><![CDATA["+titles[i]+"]]></title>";
+        xml +=   "<category>"+categories[i]+"</category>";
+        xml +=   "<publishTimeUnix>"+time.toString()+"</publishTimeUnix>";
+        xml +=   "<updateTimeUnix>"+time.toString()+"</updateTimeUnix>";
+        xml +=   "<contents><image><url>"+images[i]+"</url><thumbnail>"+images[i]+"</thumbnail></image>";
+        xml +=   "<text><content><![CDATA["+contents[i]+"]]></contents></text></contents>";
+        xml +=  "<recommendArticles><article><title><![CDATA["+title_re1[i]+"]]></title>";
+        xml +=  "<url><![CDATA["+url_re1[i]+"?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
+        xml +=  "<thumbnail><![CDATA["+image_re1[i]+"]]></thumbnail></article>";
+        xml +=  "<article><title><![CDATA["+title_re2[i]+"]]></title>";
+        xml +=  "<url><![CDATA["+url_re2[i]+"?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
+        xml +=  "<thumbnail><![CDATA["+image_re2[i]+"]]></thumbnail></article>";
+        xml +=  "<article><title><![CDATA["+title_re3[i]+"]]></title>";
+        xml +=  "<url><![CDATA["+url_re3[i]+"?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
+        xml +=  "<thumbnail><![CDATA["+image_re3[i]+"]]></thumbnail></article>";
+        xml +=  "</recommendArticles><author>Lisaguru.com</author>";
+        xml +=  "<sourceUrl><![CDATA["+urls[i]+"?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></sourceUrl></article>"
     }
-    //clear list
-    //eventEmitter.removeAllListeners();
-    /*urls = [];
-    shortlinks =[]
-    titles = [];
-    categories = [];
-    image = [];
+    xml +=  "</articles>";
 
-    url_re1 = [];
-    title_re1 = [];
-    image_re1 = [];
-    url_re2 = [];
-    title_re2 =[];
-    image_re2 = [];
-    url_re3 = [];
-    title_re3 = [];
-    image_re3 = []; */
-
+    fs.writeFile("assets/lisa_linetoday.xml",xml,function(err){
+        if(err){
+            return console.log(err);
+        }
+        console.log('Save!');
+    })
 })
 
 

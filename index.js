@@ -8,8 +8,10 @@ var port = 3000 || process.env.PORT;
 
 var lisaRouter = require('./app/routers/lisaRouter');
 
+app.use('/assets', express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 
 //setting template for app
 app.set('view engine', 'ejs');
