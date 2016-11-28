@@ -102,7 +102,7 @@ router.post('/generateContent', function (req, res) {
             }
         })
 
-       
+
         request(url_re1[i], function (err, res, html) {
             if (!err) {
                 var $ = cheerio.load(html);
@@ -120,7 +120,7 @@ router.post('/generateContent', function (req, res) {
         });
 
         //recommended2
-        
+
 
         request(url_re2[i], function (err, res, html) {
             if (!err) {
@@ -139,7 +139,7 @@ router.post('/generateContent', function (req, res) {
         });
 
         //recommended3
-        
+
 
         request(url_re3[i], function (err, res, html) {
             if (!err) {
@@ -162,61 +162,64 @@ router.post('/generateContent', function (req, res) {
     waitUntil()
         .interval(5000)
         .times(1)
-        .condition(function(){
+        .condition(function () {
             //nothing
         })
-        .done(function(){
+        .done(function () {
             eventEmitter.emit('generate');
-            res.end('Complete');
+            res.end('Already Generated!');
         });
-    
-    
+
+
 })
 
 
 eventEmitter.on('generate', function () {
     xml = "<?xml version='1.0' encoding='UTF-8' ?><articles><UUID>";
-        xml +=   rand;
-        xml +=   "</UUID><time>";
-        xml +=   currentTime.toString() + "</time>"; 
- 
-    for (var i = 0; i < list.length; i++) {
-        xml +=  "<article>";
-        xml +=   "<ID>"+shortlinks[i]+"</ID>";
-        xml +=   "<nativeCountry>TH</nativeCountry><language>th</language><publishCountries><country>TH</country></publishCountries";
-        var time = currentTime-(360000 * (i+1));
-        xml +=   "<startYmdtUnix>"+time.toString()+"</startYmdtUnix><endYmdtUnix>7274196000000</endYmdtUnix>"
-        xml +=   "<title><![CDATA["+titles[i]+"]]></title>";
-        xml +=   "<category>"+categories[i]+"</category>";
-        xml +=   "<publishTimeUnix>"+time.toString()+"</publishTimeUnix>";
-        xml +=   "<updateTimeUnix>"+time.toString()+"</updateTimeUnix>";
-        xml +=   "<contents><image><url>"+images[i]+"</url><thumbnail>"+images[i]+"</thumbnail></image>";
-        xml +=   "<text><content><![CDATA["+contents[i]+"]]></contents></text></contents>";
-        xml +=  "<recommendArticles><article><title><![CDATA["+title_re1[i]+"]]></title>";
-        xml +=  "<url><![CDATA["+url_re1[i]+"?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
-        xml +=  "<thumbnail><![CDATA["+image_re1[i]+"]]></thumbnail></article>";
-        xml +=  "<article><title><![CDATA["+title_re2[i]+"]]></title>";
-        xml +=  "<url><![CDATA["+url_re2[i]+"?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
-        xml +=  "<thumbnail><![CDATA["+image_re2[i]+"]]></thumbnail></article>";
-        xml +=  "<article><title><![CDATA["+title_re3[i]+"]]></title>";
-        xml +=  "<url><![CDATA["+url_re3[i]+"?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
-        xml +=  "<thumbnail><![CDATA["+image_re3[i]+"]]></thumbnail></article>";
-        xml +=  "</recommendArticles><author>Lisaguru.com</author>";
-        xml +=  "<sourceUrl><![CDATA["+urls[i]+"?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></sourceUrl></article>"
-    }
-    xml +=  "</articles>";
-    fs.truncate('./public/lisa_linetoday.xml',0, function(err){
-        if (err && err.code !== 'ENOENT')
-        throw err;
+    xml += rand;
+    xml += "</UUID><time>";
+    xml += currentTime.toString() + "</time>";
 
-        fs.writeFile("./public/lisa_linetoday.xml",xml,{ flag : 'w' },function(err){
-            if(err){
-                return console.log(err);
-            }
-            xml = "";
-            console.log('Save!');
-        });
+    for (var i = 0; i < list.length; i++) {
+        xml += "<article>";
+        xml += "<ID>" + shortlinks[i] + "</ID>";
+        xml += "<nativeCountry>TH</nativeCountry><language>th</language><publishCountries><country>TH</country></publishCountries";
+        var time = currentTime - (360000 * (i + 1));
+        xml += "<startYmdtUnix>" + time.toString() + "</startYmdtUnix><endYmdtUnix>7274196000000</endYmdtUnix>"
+        xml += "<title><![CDATA[" + titles[i] + "]]></title>";
+        xml += "<category>" + categories[i] + "</category>";
+        xml += "<publishTimeUnix>" + time.toString() + "</publishTimeUnix>";
+        xml += "<updateTimeUnix>" + time.toString() + "</updateTimeUnix>";
+        xml += "<contents><image><url>" + images[i] + "</url><thumbnail>" + images[i] + "</thumbnail></image>";
+        xml += "<text><content><![CDATA[" + contents[i] + "]]></contents></text></contents>";
+        xml += "<recommendArticles><article><title><![CDATA[" + title_re1[i] + "]]></title>";
+        xml += "<url><![CDATA[" + url_re1[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
+        xml += "<thumbnail><![CDATA[" + image_re1[i] + "]]></thumbnail></article>";
+        xml += "<article><title><![CDATA[" + title_re2[i] + "]]></title>";
+        xml += "<url><![CDATA[" + url_re2[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
+        xml += "<thumbnail><![CDATA[" + image_re2[i] + "]]></thumbnail></article>";
+        xml += "<article><title><![CDATA[" + title_re3[i] + "]]></title>";
+        xml += "<url><![CDATA[" + url_re3[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
+        xml += "<thumbnail><![CDATA[" + image_re3[i] + "]]></thumbnail></article>";
+        xml += "</recommendArticles><author>Lisaguru.com</author>";
+        xml += "<sourceUrl><![CDATA[" + urls[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></sourceUrl></article>"
+    }
+    xml += "</articles>";
+    fs.truncate('./public/lisa_linetoday.xml', 0, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("remove");
+            fs.writeFile("./public/lisa_linetoday.xml", xml, { flag: 'w' }, function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+                xml = "";
+                console.log('Save!');
+            });
+        }
     });
+
 
 })
 
