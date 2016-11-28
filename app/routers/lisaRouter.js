@@ -83,7 +83,7 @@ router.post('/generateContent', function (req, res) {
 
 
     for (var i = 0; i < list.length; i++) {
-        console.log("Request for content " + i);
+        console.log("Request for content " + (i+1));
         request(urls[i], function (err, res, html) {
             if (!err) {
                 var $ = cheerio.load(html);
@@ -187,7 +187,7 @@ router.post('/generateContent', function (req, res) {
         })
         .done(function () {
             eventEmitter.emit('generate');
-            res.end('Already Generated!');
+            res.end('Complete!!!');
         });
 
 

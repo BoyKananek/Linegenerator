@@ -59,6 +59,24 @@
         var json = {
             "data" : []
         };
+        for(var i=0;i<count;i++){
+            if(document.getElementById("article"+(i+1)).value == ''){
+                alert("Please enter the Article url"+(i+1));
+                return;
+            }
+            else if (document.getElementById("rec1_"+(i+1)).value == ''){
+                alert("Plase enter the first recommended "+(i+1));
+                return;
+            }
+            else if (document.getElementById("rec2_"+(i+1)).value == ''){
+                alert("Plase enter the second recommended "+(i+1));
+                return;
+            }
+            else if (document.getElementById("rec3_"+(i+1)).value == ''){
+                alert("Plase enter the third recommended "+(i+1));
+                return;
+            }
+        }
         for(var i = 0 ; i < count ; i++){
             var data = {
                 url: document.getElementById("article"+(i+1)).value,
@@ -72,7 +90,7 @@
         $.post("/lisa/generateContent",
         json,
         function(data,status){
-            alert("Data: "+data+"\nStatus:" + status);
+            alert(data);
             json = null;
             $("div.container").append("<a href='/download' >Download</a>");
         });
