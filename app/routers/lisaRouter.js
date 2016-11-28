@@ -94,9 +94,11 @@ router.post('/generateContent', function (req, res) {
                 var pre_content = $("div.article-detail div.col-md-11").remove("aside.mashsh-container").map(function () {
                     return $(this).html();
                 }).toArray();
-                content = pre_content[0];
-                var len = 4138;
-                contents.push(pre_content[0].substr(len));
+                //content = pre_content[0];
+                var content = pre_content[0].split("</aside>");
+                contents.push(content[1]);
+                //var len = 4138;
+                //contents.push(pre_content[0].substr(len)); 
             }
         })
 
@@ -203,13 +205,17 @@ eventEmitter.on('generate', function () {
         xml +=  "<sourceUrl><![CDATA["+urls[i]+"?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></sourceUrl></article>"
     }
     xml +=  "</articles>";
+    fs.truncate('./public/lisa_linetoday.xml',0, function(err){
+        if (err && err.code !== 'ENOENT')
+        throw err;
 
-    fs.writeFile("./public/lisa_linetoday.xml",xml,{ flag : 'wx' },function(err){
-        if(err){
-            return console.log(err);
-        }
-        xml = "";
-        console.log('Save!');
+        fs.writeFile("./public/lisa_linetoday.xml",xml,{ flag : 'w' },function(err){
+            if(err){
+                return console.log(err);
+            }
+            xml = "";
+            console.log('Save!');
+        });
     });
 
 })
