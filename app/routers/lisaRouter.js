@@ -204,12 +204,14 @@ eventEmitter.on('generate', function () {
     }
     xml +=  "</articles>";
 
-    fs.writeFile("./public/lisa_linetoday.xml",xml,function(err){
+    fs.writeFile("./public/lisa_linetoday.xml",xml,{ flag : 'wx' },function(err){
         if(err){
             return console.log(err);
         }
+        xml = "";
         console.log('Save!');
-    })
+    });
+
 })
 
 
