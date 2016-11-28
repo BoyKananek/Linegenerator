@@ -9,6 +9,7 @@ var port = 3000 || process.env.PORT;
 
 var lisaRouter = require('./app/routers/lisaRouter');
 var viewRouter = require('./app/routers/viewRouter');
+var helloRouter = require('./app/routers/helloRouter');
 
 //app.use('/assets', express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,6 +21,7 @@ app.set('view engine', 'ejs');
 
 
 app.use('/lisa',lisaRouter);
+app.use('/hello',helloRouter);
 app.use('/',viewRouter);
 
 

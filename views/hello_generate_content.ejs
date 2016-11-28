@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+
+<head>
+    <title> Lisaguru Line generate content </title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <!-- load fontawesome -->
+</head>
+
+<body>
+    <div class="container">    
+        <div class="col-sm-6 col-sm-offset-3">
+            <br>
+            <center><h1> Hellomagazine TH Line content generated </h1></center>
+            <center><button type="button" class="btn btn-primary" onclick="addArticle();">Add the content</button>
+            <button type="button" class="btn btn-primary" onclick="removeArticle();">Remove the content</button></center>
+            <div class="form-article">
+                <div class="form-group">
+                    <label> Main Article url </label>
+                    <input type="text" class="form-control" id="article1" name="article1">
+                </div>
+                <div class="form-group">
+                    <label> First Recommanded Article url 1</label>
+                    <input type="text" class="form-control" id="rec1_1" name="rec1_1">
+                </div>
+                <div class="form-group">
+                    <label> Second Recommanded Article url 1</label>
+                    <input type="text" class="form-control" id="rec2_1" name="rec2_1">
+                </div>
+                <div class="form-group">
+                    <label> Third Recommanded Article url 1</label>
+                    <input type="text" class="form-control" id="rec3_1" name="rec3_1">
+                </div>
+                
+            </div>
+            <center><button type="button" class="btn btn-primary" onclick="submit();">Submit</button></center>
+            <div class="download-here">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var count = 1;
+    function addArticle(){
+        count ++;
+        $("div.form-article").append("<hr class='line"+count+"'><div class='form-group-"+count+"'><label> Main Article url </label><input type='text' class='form-control' id='article"+count+"' name='article"+count+"'></div>");
+        $("div.form-article").append("<div class='form-group-"+count+"'><label>First Recommanded Article url "+count+"</label><input type='text' class='form-control' id='rec1_"+count+"' name='rec1_"+count+"'></div>");
+        $("div.form-article").append("<div class='form-group-"+count+"'><label>Second Recommanded Article url "+count+"</label><input type='text' class='form-control' id='rec2_"+count+"' name='rec2_"+count+"'></div>");
+        $("div.form-article").append("<div class='form-group-"+count+"'><label>Third Recommanded Article url "+count+"</label><input type='text' class='form-control' id='rec3_"+count+"' name='rec3_"+count+"'></div>");
+    }
+    function removeArticle(){
+        if(count > 1){
+            $("div").remove(".form-group-"+count);
+            $("hr").remove(".line"+count);
+            count --;
+        }
+    }
+    function submit(){
+        var json = {
+            "data" : []
+        };
+        for(var i=0;i<count;i++){
+            if(document.getElementById("article"+(i+1)).value == ''){
+                alert("Please enter the Article url"+(i+1));
+                return;
+            }
+            else if (document.getElementById("rec1_"+(i+1)).value == ''){
+                alert("Plase enter the first recommended "+(i+1));
+                return;
+            }
+            else if (document.getElementById("rec2_"+(i+1)).value == ''){
+                alert("Plase enter the second recommended "+(i+1));
+                return;
+            }
+            else if (document.getElementById("rec3_"+(i+1)).value == ''){
+                alert("Plase enter the third recommended "+(i+1));
+                return;
+            }
+        }
+        for(var i = 0 ; i < count ; i++){
+            var data = {
+                url: document.getElementById("article"+(i+1)).value,
+                recommended1 : document.getElementById("rec1_"+(i+1)).value,
+                recommended2 : document.getElementById("rec2_"+(i+1)).value,
+                recommended3 : document.getElementById("rec2_"+(i+1)).value
+            }
+            json.data.push(data);
+        }
+        console.log(json);
+        $.post("/hello/generateContent",
+        json,
+        function(data,status){
+            alert(data);
+            json = null;
+            $("div.download-here").html("<a href='/hello_download' >Download</a>");
+        });
+    }
+
+</script>
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+</html>
