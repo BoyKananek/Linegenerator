@@ -7,8 +7,9 @@ router.get("/",function(req,res){
 router.get("/line_generate",function(req,res){
     res.render("lisa_generate_content");
 });
-router.get("/hello_nererate",function(req,res){
-
+router.get("/download",function(req,res){
+    var file = './public/lisa_linetoday.xml';
+    res.download(file); // Set disposition and send it.
 });
 
 

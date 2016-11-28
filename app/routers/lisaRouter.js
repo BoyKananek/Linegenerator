@@ -26,8 +26,10 @@ var eventEmitter = new events.EventEmitter();
 
 
 */
-var rand = uuid.v4();  // uuid
-var currentTime = new Date().getTime(); //currentTime
+//var rand = uuid.v4();  // uuid
+//var currentTime = new Date().getTime(); //currentTime
+var rand;
+var currentTime;
 var list;
 var xml;
 
@@ -50,8 +52,28 @@ var title_re3 = new Array();
 var image_re3 = new Array();
 
 router.post('/generateContent', function (req, res) {
+    //prepare process
+    rand = uuid.v4();
+    currentTime = new Date().getTime();
+    xml = "";
+    urls = [];
+    shortlinks = [];
+    titles = [];
+    categories = [];
+    images = [];
+    contents=[];
+    url_re1 = [];
+    title_re1 = [];
+    image_re1 = [];
+    url_re2 = [];
+    title_re2 = [];
+    image_re2 = [];
+    url_re3 = [];
+    title_re3 = [];
+    image_re3 = [];
     list = req.body.data;
 
+    //processing
     for (var i = 0; i < list.length; i++) {
         urls.push(list[i].url);
         url_re1.push(list[i].recommended1);
@@ -94,11 +116,9 @@ router.post('/generateContent', function (req, res) {
                 var pre_content = $("div.article-detail div.col-md-11").remove("aside.mashsh-container").map(function () {
                     return $(this).html();
                 }).toArray();
-                //content = pre_content[0];
                 var content = pre_content[0].split("</aside>");
                 contents.push(content[1]);
-                //var len = 4138;
-                //contents.push(pre_content[0].substr(len)); 
+                
             }
         })
 
@@ -214,7 +234,6 @@ eventEmitter.on('generate', function () {
                 if (err) {
                     return console.log(err);
                 }
-                xml = "";
                 console.log('Save!');
             });
         }

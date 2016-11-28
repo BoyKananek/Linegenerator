@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div class="container">     
+    <div class="container">    
         <div class="col-sm-6 col-sm-offset-3">
             <br>
             <center><h1> Lisaguru Line content generated </h1></center>
@@ -74,6 +74,7 @@
         function(data,status){
             alert("Data: "+data+"\nStatus:" + status);
             json = null;
+            $("div.container").append("<a href='/download' >Download</a>");
         });
     }
 

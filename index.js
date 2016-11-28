@@ -1,6 +1,7 @@
 var express = require('express');
 var events = require('events');
 var path = require('path');
+var morgan = require('morgan');
 var bodyParser = require('body-parser');
 
 var app = express();
@@ -12,7 +13,7 @@ var viewRouter = require('./app/routers/viewRouter');
 //app.use('/assets', express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+app.use(morgan('dev'));
 
 //setting template for app
 app.set('view engine', 'ejs');
