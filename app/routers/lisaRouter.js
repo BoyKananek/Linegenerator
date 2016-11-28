@@ -98,6 +98,7 @@ router.post('/generateContent', function (req, res) {
                 var pre_title = $("h1.article-title").map(function () {
                     return $(this).text();
                 }).toArray();
+                console.log(pre_title[0]);
                 titles.push(pre_title[0]);
 
                 //find category

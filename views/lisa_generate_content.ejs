@@ -36,6 +36,8 @@
                 
             </div>
             <center><button type="button" class="btn btn-primary" onclick="submit();">Submit</button></center>
+            <div class="download-here">
+            </div>
         </div>
     </div>
 </body>
@@ -92,7 +94,7 @@
         function(data,status){
             alert(data);
             json = null;
-            $("div.container").append("<a href='/download' >Download</a>");
+            $("div.download-here").html("<a href='/download' >Download</a>");
         });
     }
 
