@@ -4,6 +4,7 @@ var router = express.Router();
 router.get("/",function(req,res){
     res.render("index");
 });
+
 router.get("/lisa_linegenerate",function(req,res){
     res.render("lisa_generate_content");
 });
