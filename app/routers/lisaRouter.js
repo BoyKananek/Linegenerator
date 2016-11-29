@@ -204,7 +204,7 @@ eventEmitter.on('generate', function () {
     for (var i = 0; i < list.length; i++) {
         xml += "<article>";
         xml += "<ID>" + shortlinks[i] + "</ID>";
-        xml += "<nativeCountry>TH</nativeCountry><language>th</language><publishCountries><country>TH</country></publishCountries";
+        xml += "<nativeCountry>TH</nativeCountry><language>th</language><publishCountries><country>TH</country></publishCountries>";
         var time = currentTime - (360000 * (i + 1));
         xml += "<startYmdtUnix>" + time.toString() + "</startYmdtUnix><endYmdtUnix>7274196000000</endYmdtUnix>"
         xml += "<title><![CDATA[" + titles[i] + "]]></title>";

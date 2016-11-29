@@ -85,25 +85,25 @@ router.post('/generateContent', function (req, res) {
             if (!err) {
                 var $ = cheerio.load(html);
                 //find shortlink
-                var pre_shortlink = $("link[rel='shortlink']").map(function () {
+                /*var pre_shortlink = $("link[rel='shortlink']").map(function () {
                     return $(this).attr('href');
                 }).toArray();
                 var temp = pre_shortlink[0];
-                shortlinks.push(temp.substr(24));
+                shortlinks.push(temp.substr(24));*/
 
                 //find title
-                var pre_title = $("h1.article-title").map(function () {
+                var pre_title = $("div.content-column h1").map(function () {
                     return $(this).text();
                 }).toArray();
                 console.log(pre_title[0]);
                 titles.push(pre_title[0]);
 
                 //find category
-                var pre_category = $("div.breadcrumb a[rel='category tag']").map(function () {
+                var pre_category = $("meta").map(function () {
                     return $(this).text();
                 }).toArray();
                 categories.push(pre_category[0]);
-
+                /*
                 //find image url
                 var pre_image = $("img.attachment-banner-image").map(function () {
                     return $(this).attr('src');
@@ -115,13 +115,13 @@ router.post('/generateContent', function (req, res) {
                     return $(this).html();
                 }).toArray();
                 var content = pre_content[0].split("</aside>");
-                contents.push(content[1]);
+                contents.push(content[1]);*/
                 
             }
         })
 
 
-        request(url_re1[i], function (err, res, html) {
+        /*request(url_re1[i], function (err, res, html) {
             if (!err) {
                 var $ = cheerio.load(html);
                 var title = $("h1.article-title").map(function () {
@@ -173,7 +173,7 @@ router.post('/generateContent', function (req, res) {
                 image_re3.push(image[0]);
 
             }
-        });
+        }); */
 
     }
 
@@ -184,7 +184,7 @@ router.post('/generateContent', function (req, res) {
             //nothing
         })
         .done(function () {
-            eventEmitter.emit('generate');
+            //eventEmitter.emit('generate');
             res.end('Complete!!!');
         });
 
