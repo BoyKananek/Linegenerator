@@ -5,13 +5,13 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');
 
 var app = express();
-var port = process.env.PORT;
+var port = 3000 ||process.env.PORT;
 
 var lisaRouter = require('./app/routers/lisaRouter');
 var viewRouter = require('./app/routers/viewRouter');
 var helloRouter = require('./app/routers/helloRouter');
 
-app.use(express.static(__dirname + '/public'))
+//app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
