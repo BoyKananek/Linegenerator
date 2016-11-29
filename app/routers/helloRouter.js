@@ -99,10 +99,11 @@ router.post('/generateContent', function (req, res) {
                 titles.push(pre_title[0]);
 
                 //find category
-                var pre_category = $("meta").map(function () {
-                    return $(this).text();
+                var pre_category = $("meta[property='og:url']").map(function () {
+                    return $(this).attr('content');
                 }).toArray();
-                categories.push(pre_category[0]);
+                console.log(pre_category[0]);
+                //categories.push(pre_category[0]);
                 /*
                 //find image url
                 var pre_image = $("img.attachment-banner-image").map(function () {
