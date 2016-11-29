@@ -98,6 +98,12 @@
         function(data,status){
             alert(data);
             json = null;
+            for(var i=0;i< count ;i++){
+                document.getElementById("article"+(i+1)).value = "";
+                document.getElementById("rec1_"+(i+1)).value = "";
+                document.getElementById("rec2_"+(i+1)).value = "";
+                document.getElementById("rec3_"+(i+1)).value = "";
+            }
             $("div.download-here").html("<a href='/lisa_download' >Download</a>");
         });
     }
