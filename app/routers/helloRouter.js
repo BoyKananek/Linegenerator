@@ -90,7 +90,7 @@ router.post('/generateContent', function (req, res) {
                 var pre_title = $("div.content-column h1").map(function () {
                     return $(this).text();
                 }).toArray();
-                console.log(pre_title[0]);
+               
                 titles.push(pre_title[0]);
 
                 //find category
@@ -100,21 +100,21 @@ router.post('/generateContent', function (req, res) {
                 var temp = pre_category[0]
                 var cat = temp.substr(37);
                 var sub = cat.split("/");
-                console.log(sub[0]);
+                
                 categories.push(sub[0]);
                 
                 //find image url
                 var pre_image = $("div.image-holder img").map(function () {
                     return $(this).attr('src');
                 }).toArray();
-                console.log(pre_image[0]);
+                
                 images.push(pre_image[0]);
 
                 //find content 
                 var pre_content = $("div.article-content").remove("aside.mashsh-container").map(function () {
                     return $(this).html();
                 }).toArray();
-                console.log(pre_content[0]);
+                
                 contents.push(pre_content[0]); 
                 
             }
