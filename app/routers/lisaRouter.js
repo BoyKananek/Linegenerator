@@ -212,7 +212,7 @@ eventEmitter.on('generate', function () {
         xml += "<publishTimeUnix>" + time.toString() + "</publishTimeUnix>";
         xml += "<updateTimeUnix>" + time.toString() + "</updateTimeUnix>";
         xml += "<contents><image><url>" + images[i] + "</url><thumbnail>" + images[i] + "</thumbnail></image>";
-        xml += "<text><content><![CDATA[" + contents[i] + "]]></contents></text></contents>";
+        xml += "<text><content><![CDATA[" + contents[i] + "]]></content></text></contents>";
         xml += "<recommendArticles><article><title><![CDATA[" + title_re1[i] + "]]></title>";
         xml += "<url><![CDATA[" + url_re1[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
         xml += "<thumbnail><![CDATA[" + image_re1[i] + "]]></thumbnail></article>";
