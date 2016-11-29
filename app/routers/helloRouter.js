@@ -23,8 +23,6 @@ var eventEmitter = new events.EventEmitter();
     output: {
         xml : String;
     }
-
-
 */
 
 var rand;
