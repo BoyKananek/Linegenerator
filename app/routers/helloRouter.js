@@ -76,6 +76,7 @@ router.post('/generateContent', function (req, res) {
         url_re1.push(list[i].recommended1);
         url_re2.push(list[i].recommended2);
         url_re3.push(list[i].recommended3);
+        shortlinks.push(list[i].shortlink);
     }
 
     //all redo it again in hello website
@@ -84,12 +85,6 @@ router.post('/generateContent', function (req, res) {
         request(urls[i], function (err, res, html) {
             if (!err) {
                 var $ = cheerio.load(html);
-                //find shortlink
-                /*var pre_shortlink = $("link[rel='shortlink']").map(function () {
-                    return $(this).attr('href');
-                }).toArray();
-                var temp = pre_shortlink[0];
-                shortlinks.push(temp.substr(24));*/
 
                 //find title
                 var pre_title = $("div.content-column h1").map(function () {
@@ -102,35 +97,39 @@ router.post('/generateContent', function (req, res) {
                 var pre_category = $("meta[property='og:url']").map(function () {
                     return $(this).attr('content');
                 }).toArray();
-                console.log(pre_category[0]);
-                //categories.push(pre_category[0]);
-                /*
+                var temp = pre_category[0]
+                var cat = temp.substr(37);
+                var sub = cat.split("/");
+                console.log(sub[0]);
+                categories.push(sub[0]);
+                
                 //find image url
-                var pre_image = $("img.attachment-banner-image").map(function () {
+                var pre_image = $("div.image-holder img").map(function () {
                     return $(this).attr('src');
                 }).toArray();
+                console.log(pre_image[0]);
                 images.push(pre_image[0]);
 
                 //find content 
-                var pre_content = $("div.article-detail div.col-md-11").remove("aside.mashsh-container").map(function () {
+                var pre_content = $("div.article-content").remove("aside.mashsh-container").map(function () {
                     return $(this).html();
                 }).toArray();
-                var content = pre_content[0].split("</aside>");
-                contents.push(content[1]);*/
+                console.log(pre_content[0]);
+                contents.push(pre_content[0]); 
                 
             }
         })
 
 
-        /*request(url_re1[i], function (err, res, html) {
+        request(url_re1[i], function (err, res, html) {
             if (!err) {
                 var $ = cheerio.load(html);
-                var title = $("h1.article-title").map(function () {
+                var title = $("div.content-column h1").map(function () {
                     return $(this).text();
                 }).toArray();
                 title_re1.push(title[0]);
 
-                var image = $("img.attachment-banner-image").map(function () {
+                var image = $("div.image-holder img").map(function () {
                     return $(this).attr('src');
                 }).toArray();
                 image_re1.push(image[0]);
@@ -144,12 +143,12 @@ router.post('/generateContent', function (req, res) {
         request(url_re2[i], function (err, res, html) {
             if (!err) {
                 var $ = cheerio.load(html);
-                var title = $("h1.article-title").map(function () {
+                var title = $("div.content-column h1").map(function () {
                     return $(this).text();
                 }).toArray();
                 title_re2.push(title[0]);
 
-                var image = $("img.attachment-banner-image").map(function () {
+                var image = $("div.image-holder img").map(function () {
                     return $(this).attr('src');
                 }).toArray();
                 image_re2.push(image[0]);
@@ -163,18 +162,18 @@ router.post('/generateContent', function (req, res) {
         request(url_re3[i], function (err, res, html) {
             if (!err) {
                 var $ = cheerio.load(html);
-                var title = $("h1.article-title").map(function () {
+                var title = $("div.content-column h1").map(function () {
                     return $(this).text();
                 }).toArray();
                 title_re3.push(title[0]);
 
-                var image = $("img.attachment-banner-image").map(function () {
+                var image = $("div.image-holder img").map(function () {
                     return $(this).attr('src');
                 }).toArray();
                 image_re3.push(image[0]);
 
             }
-        }); */
+        }); 
 
     }
 
@@ -185,7 +184,7 @@ router.post('/generateContent', function (req, res) {
             //nothing
         })
         .done(function () {
-            //eventEmitter.emit('generate');
+            eventEmitter.emit('generate');
             res.end('Complete!!!');
         });
 

@@ -13,6 +13,7 @@
     <div class="container">    
         <div class="col-sm-6 col-sm-offset-3">
             <br>
+            <a href="/"> Back </a>
             <center><h1> Hellomagazine TH Line content generated </h1></center>
             <center><button type="button" class="btn btn-primary" onclick="addArticle();">Add the content</button>
             <button type="button" class="btn btn-primary" onclick="removeArticle();">Remove the content</button></center>
@@ -22,15 +23,19 @@
                     <input type="text" class="form-control" id="article1" name="article1">
                 </div>
                 <div class="form-group">
-                    <label> First Recommanded Article url 1</label>
+                    <label> Content ID </label>
+                    <input type="text" class="form-control" id="c_id1" name="c_id1">
+                </div>
+                <div class="form-group">
+                    <label style="color:#5694e0;"> First Recommanded Article url 1</label>
                     <input type="text" class="form-control" id="rec1_1" name="rec1_1">
                 </div>
                 <div class="form-group">
-                    <label> Second Recommanded Article url 1</label>
+                    <label style="color:#5694e0;"> Second Recommanded Article url 1</label>
                     <input type="text" class="form-control" id="rec2_1" name="rec2_1">
                 </div>
                 <div class="form-group">
-                    <label> Third Recommanded Article url 1</label>
+                    <label style="color:#5694e0;"> Third Recommanded Article url 1</label>
                     <input type="text" class="form-control" id="rec3_1" name="rec3_1">
                 </div>
                 
@@ -46,9 +51,10 @@
     function addArticle(){
         count ++;
         $("div.form-article").append("<hr class='line"+count+"'><div class='form-group-"+count+"'><label> Main Article url </label><input type='text' class='form-control' id='article"+count+"' name='article"+count+"'></div>");
-        $("div.form-article").append("<div class='form-group-"+count+"'><label>First Recommanded Article url "+count+"</label><input type='text' class='form-control' id='rec1_"+count+"' name='rec1_"+count+"'></div>");
-        $("div.form-article").append("<div class='form-group-"+count+"'><label>Second Recommanded Article url "+count+"</label><input type='text' class='form-control' id='rec2_"+count+"' name='rec2_"+count+"'></div>");
-        $("div.form-article").append("<div class='form-group-"+count+"'><label>Third Recommanded Article url "+count+"</label><input type='text' class='form-control' id='rec3_"+count+"' name='rec3_"+count+"'></div>");
+        $("div.form-article").append("<div class='form-group-"+count+"'><label> Content ID </label><input type='text' class='form-control' id='c_id"+count+"' name='c_id"+count+"'></div>");
+        $("div.form-article").append("<div class='form-group-"+count+"'><label style='color:#5694e0;'>First Recommanded Article url "+count+"</label><input type='text' class='form-control' id='rec1_"+count+"' name='rec1_"+count+"'></div>");
+        $("div.form-article").append("<div class='form-group-"+count+"'><label style='color:#5694e0;'>Second Recommanded Article url "+count+"</label><input type='text' class='form-control' id='rec2_"+count+"' name='rec2_"+count+"'></div>");
+        $("div.form-article").append("<div class='form-group-"+count+"'><label style='color:#5694e0;'>Third Recommanded Article url "+count+"</label><input type='text' class='form-control' id='rec3_"+count+"' name='rec3_"+count+"'></div>");
     }
     function removeArticle(){
         if(count > 1){
@@ -64,6 +70,10 @@
         for(var i=0;i<count;i++){
             if(document.getElementById("article"+(i+1)).value == ''){
                 alert("Please enter the Article url"+(i+1));
+                return;
+            }
+            else if (document.getElementById("c_id"+(i+1)).value == ''){
+                alert("Please enter the content id "+(i+1));
                 return;
             }
             else if (document.getElementById("rec1_"+(i+1)).value == ''){
@@ -82,6 +92,7 @@
         for(var i = 0 ; i < count ; i++){
             var data = {
                 url: document.getElementById("article"+(i+1)).value,
+                shortlink : document.getElementById("c_id"+(i+1)).value,
                 recommended1 : document.getElementById("rec1_"+(i+1)).value,
                 recommended2 : document.getElementById("rec2_"+(i+1)).value,
                 recommended3 : document.getElementById("rec2_"+(i+1)).value
