@@ -97,10 +97,9 @@ router.post('/generateContent', function (req, res) {
                 var pre_category = $("meta[property='og:url']").map(function () {
                     return $(this).attr('content');
                 }).toArray();
-                var temp = pre_category[0]
-                var cat = temp.substr(37);
+                var temp = pre_category[0];
+                var cat = temp.substr(33);
                 var sub = cat.split("/");
-                
                 categories.push(sub[0]);
                 
                 //find image url
