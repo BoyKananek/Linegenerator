@@ -201,7 +201,7 @@ eventEmitter.on('generate', function () {
     for (var i = 0; i < list.length; i++) {
         xml += "<article>";
         xml += "<ID>" + shortlinks[i] + "</ID>";
-        xml += "<nativeCountry>TH</nativeCountry><language>th</language><publishCountries><country>TH</country></publishCountries";
+        xml += "<nativeCountry>TH</nativeCountry><language>th</language><publishCountries><country>TH</country></publishCountries>";
         var time = currentTime - (360000 * (i + 1));
         xml += "<startYmdtUnix>" + time.toString() + "</startYmdtUnix><endYmdtUnix>7274196000000</endYmdtUnix>"
         xml += "<title><![CDATA[" + titles[i] + "]]></title>";
@@ -209,7 +209,7 @@ eventEmitter.on('generate', function () {
         xml += "<publishTimeUnix>" + time.toString() + "</publishTimeUnix>";
         xml += "<updateTimeUnix>" + time.toString() + "</updateTimeUnix>";
         xml += "<contents><image><url>" + images[i] + "</url><thumbnail>" + images[i] + "</thumbnail></image>";
-        xml += "<text><content><![CDATA[" + contents[i] + "]]></contents></text></contents>";
+        xml += "<text><content><![CDATA[" + contents[i] + "]]></content></text></contents>";
         xml += "<recommendArticles><article><title><![CDATA[" + title_re1[i] + "]]></title>";
         xml += "<url><![CDATA[" + url_re1[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
         xml += "<thumbnail><![CDATA[" + image_re1[i] + "]]></thumbnail></article>";
