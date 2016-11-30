@@ -127,7 +127,7 @@ router.post('/generateContent', function (req, res) {
                     return $(this).text();
                 }).toArray();
                 title_re1.push(title[0]);
-
+               
                 var image = $("div.image-holder img").map(function () {
                     return $(this).attr('src');
                 }).toArray();
@@ -146,7 +146,7 @@ router.post('/generateContent', function (req, res) {
                     return $(this).text();
                 }).toArray();
                 title_re2.push(title[0]);
-
+               
                 var image = $("div.image-holder img").map(function () {
                     return $(this).attr('src');
                 }).toArray();
@@ -165,7 +165,7 @@ router.post('/generateContent', function (req, res) {
                     return $(this).text();
                 }).toArray();
                 title_re3.push(title[0]);
-
+               
                 var image = $("div.image-holder img").map(function () {
                     return $(this).attr('src');
                 }).toArray();
