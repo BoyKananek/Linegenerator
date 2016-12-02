@@ -176,8 +176,9 @@ router.post('/generateContent', function (req, res) {
 
     }
 
+    if (list.length <= 4){
     waitUntil()
-        .interval(5000)
+        .interval(6000)
         .times(1)
         .condition(function () {
             //nothing
@@ -186,8 +187,18 @@ router.post('/generateContent', function (req, res) {
             eventEmitter.emit('generate');
             res.end('Complete!!!');
         });
-
-
+    }else{
+        waitUntil()
+        .interval(40000)
+        .times(1)
+        .condition(function () {
+            //nothing
+        })
+        .done(function () {
+            eventEmitter.emit('generate');
+            res.end('Complete!!!');
+        });
+    }
 })
 
 
