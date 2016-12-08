@@ -192,7 +192,7 @@ router.post('/generateContent', function (req, res) {
         });
     }else{
         waitUntil()
-        .interval(40000)
+        .interval(10000)
         .times(1)
         .condition(function () {
             //nothing
