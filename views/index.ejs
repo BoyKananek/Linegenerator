@@ -2,19 +2,91 @@
 <html>
 <head>
     <title>Burda Linetoday</title>
+    <link href="/css/bootstrap-4/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/home.css" rel="stylesheet">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+
+    <!-- Load Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+
+    <!-- load bootstrap css -->
+    <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> -->
+
+    <!-- load fontawesome -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 </head>
 <body>
     <header id="top" class="header">
-        <div class="text-vertical-center">
-            <h1>Welcome to our services in Digital Department </h1>
-            <h3>Generating content to xml file for Linetoday</h3>
-            <br>
-            <a href="/lisa_linegenerate" class="btn btn-dark btn-lg">Lisaguru</a>   <a href="/hello_linegenerate" class="btn btn-dark btn-lg">Hello magazine thailand </a>
+      <nav class="navbar navbar-dark bg-inverse">
+        <div class="container">
+          <a class="navbar-brand logo" href="/">LINE TODAY</a>
+          <ul class="nav navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/lisa_linegenerate">Lisaguru</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/hello_linegenerate">Hello!</a>
+            </li>
+          </ul>
         </div>
+      </nav>
+      <div class="clearfix"></div>
     </header>
+
+    <content>
+      <div class="container main-content">
+        <div class="row">
+          <div class="text-center col-md-12">
+            <h1>Welcome to our services in Digital Department </h1>
+            <h5 style="margin-bottom:30px;">Choose the Brand you want to generating content to <strong>xml file</strong> for Linetoday</h5>
+            <br>
+            <div class="row">
+              <div class="col-md-6 col-xs-6">
+                <div class="btn-wrapper">
+                  <div>
+                    <a href="/lisa_linegenerate" class="">
+                      <img src="/img/lisa_logo.png" height="40px;">
+                    </a>
+                  </div>
+                  <div>
+                    <a href="/lisa_linegenerate" class="btn btn-green btn-lg">
+                      Select
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-xs-6">
+                <div class="btn-wrapper">
+                  <a href="/hello_linegenerate" class="">
+                    <img src="/img/hello_logo.png" height="40px;">
+                  </a>
+                </div>
+                <div>
+                  <a href="/hello_linegenerate" class="btn btn-green btn-lg">
+                    Select
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container line-bg">
+        <img src="/img/line_bg.png">
+      </div>
+    </content>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <p>&copy; 2016 Burda Digital</p>
+          </div>
+        </div>
+      </div>
+    </footer>
 </body>
 
 </html>
