@@ -61,7 +61,7 @@ router.post('/generateContent', function (req, res) {
     titles = [];
     categories = [];
     images = [];
-    contents=[];
+    contents = [];
     url_re1 = [];
     title_re1 = [];
     image_re1 = [];
@@ -83,7 +83,7 @@ router.post('/generateContent', function (req, res) {
 
 
     for (var i = 0; i < list.length; i++) {
-        console.log("Request for content " + (i+1));
+        console.log("Request for content " + (i + 1));
         request(urls[i], function (err, res, html) {
             if (!err) {
                 var $ = cheerio.load(html);
@@ -105,7 +105,15 @@ router.post('/generateContent', function (req, res) {
                 var pre_category = $("div.breadcrumb a[rel='category tag']").map(function () {
                     return $(this).text();
                 }).toArray();
-                categories.push(pre_category[0]);
+                console.log(pre_category[0]);
+                if(pre_category[0].includes("&")){
+                    pre_category[0] = pre_category[0].replace("&","&amp;");
+                    console.log(pre_category[0]);
+                    categories.push(pre_category[0]);
+                }
+                else{
+                    categories.push(pre_category[0]);
+                }
 
                 //find image url
                 var pre_image = $("img.attachment-banner-image").map(function () {
@@ -119,7 +127,7 @@ router.post('/generateContent', function (req, res) {
                 }).toArray();
                 var content = pre_content[0].split("</aside>");
                 contents.push(content[1]);
-                
+
             }
         })
 
@@ -179,28 +187,28 @@ router.post('/generateContent', function (req, res) {
         });
 
     }
-    if (list.length <= 4){
-    waitUntil()
-        .interval(6000)
-        .times(1)
-        .condition(function () {
-            //nothing
-        })
-        .done(function () {
-            eventEmitter.emit('generate');
-            res.end('Complete!!!');
-        });
-    }else{
+    if (list.length <= 4) {
         waitUntil()
-        .interval(10000)
-        .times(1)
-        .condition(function () {
-            //nothing
-        })
-        .done(function () {
-            eventEmitter.emit('generate');
-            res.end('Complete!!!');
-        });
+            .interval(6000)
+            .times(1)
+            .condition(function () {
+                //nothing
+            })
+            .done(function () {
+                eventEmitter.emit('generate');
+                res.end('Complete!!!');
+            });
+    } else {
+        waitUntil()
+            .interval(10000)
+            .times(1)
+            .condition(function () {
+                //nothing
+            })
+            .done(function () {
+                eventEmitter.emit('generate');
+                res.end('Complete!!!');
+            });
     }
 
 
@@ -214,6 +222,7 @@ eventEmitter.on('generate', function () {
     xml += currentTime.toString() + "</time>";
 
     for (var i = 0; i < list.length; i++) {
+        
         xml += "<article>";
         xml += "<ID>" + shortlinks[i] + "</ID>";
         xml += "<nativeCountry>TH</nativeCountry><language>th</language><publishCountries><country>TH</country></publishCountries>";
