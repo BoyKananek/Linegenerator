@@ -50,6 +50,7 @@ var image_re3 = new Array();
 
 router.post('/generateContent', function (req, res) {
     //prepare process
+   
     rand = uuid.v4();
     currentTime = new Date().getTime();
     xml = "";
@@ -79,10 +80,132 @@ router.post('/generateContent', function (req, res) {
         shortlinks.push(list[i].shortlink);
     }
 
+    async.series([function(callback){
+        async.each(list,function(eachlist,callback){
+            async.series([
+                function(callback){
+                    setTimeout(function(){
+                        request(eachlist.url, function (err, res, html) {
+                            if (!err) {
+                                var $ = cheerio.load(html);
+                                //find title
+                                var pre_title = $("div.content-column h1").map(function () {
+                                    return $(this).text();
+                                }).toArray();
+                                titles.push(pre_title[0]);
+                                console.log(pre_title[0]);
+                                //find category
+                                var pre_category = $("meta[property='og:url']").map(function () {
+                                    return $(this).attr('content');
+                                }).toArray();
+                                var temp = pre_category[0];
+                                var cat = temp.substr(36);
+                                var sub = cat.split("/");
+                                categories.push(sub[1]);
+                                console.log(sub[1]);
+                                
+                                //find image url
+                                var pre_image = $("div.image-holder img").map(function () {
+                                    return $(this).attr('src');
+                                }).toArray();
+                                
+                                images.push(pre_image[0]);
+
+                                //find content 
+                                var pre_content = $("div.article-content").remove("aside.mashsh-container").map(function () {
+                                    return $(this).html();
+                                }).toArray();
+                                
+                                contents.push(pre_content[0]); 
+                                console.log('Main');
+                            }
+                            callback();
+                        })
+                     
+                    },1000);
+                    
+
+                },function(callback){
+                    setTimeout(function(){
+                        request(eachlist.recommended1, function (err, res, html) {
+                            if (!err) {
+                                var $ = cheerio.load(html);
+                                var title = $("div.content-column h1").map(function () {
+                                    return $(this).text();
+                                }).toArray();
+                                title_re1.push(title[0]);
+                                var image = $("div.image-holder img").map(function () {
+                                    return $(this).attr('src');
+                                }).toArray();
+                                image_re1.push(image[0]);
+                                console.log('Rec 1');
+                                console.log(title[0]);
+                                
+                            }
+                            callback();
+                        });
+                        
+                    },1000);
+                    
+
+                },function(callback){
+                    setTimeout(function(){
+                        request(eachlist.recommended2, function (err, res, html) {
+                            if (!err) {
+                                var $ = cheerio.load(html);
+                                var title = $("div.content-column h1").map(function () {
+                                    return $(this).text();
+                                }).toArray();
+                                title_re2.push(title[0]);
+                                var image = $("div.image-holder img").map(function () {
+                                    return $(this).attr('src');
+                                }).toArray();
+                                image_re2.push(image[0]);
+                                console.log('Rec 2');
+                                console.log(title[0]);
+                            }
+                            callback();
+                        });
+                        
+                    },1000);
+                },function(callback){
+                    setTimeout(function(){
+                        request(eachlist.recommended3, function (err, res, html) {
+                            if (!err) {
+                                var $ = cheerio.load(html);
+                                var title = $("div.content-column h1").map(function () {
+                                    return $(this).text();
+                                }).toArray();
+                                title_re3.push(title[0]);
+                                var image = $("div.image-holder img").map(function () {
+                                    return $(this).attr('src');
+                                }).toArray();
+                                image_re3.push(image[0]);
+                                console.log('Rec 3');
+                                console.log(title[0]);
+                            }
+                            callback();
+                        });
+                        
+                    },1000);
+                }
+            ])
+        });
+        callback();
+    },function(callback){
+        setTimeout(function(){
+            console.log("create xml file");
+            eventEmitter.emit('generate');
+            res.end('Complete!!!');
+        },4000*list.length);
+    }]);
+
+
     //all redo it again in hello website
-    for (var i = 0; i < list.length; i++) {
-        console.log("Request for content " + (i+1));
-        request(urls[i], function (err, res, html) {
+    //for (var i = 0; i < list.length; i++) {
+        //console.log("Request for content " + (i+1));
+    
+        /*request(urls[i], function (err, res, html) {
             if (!err) {
                 var $ = cheerio.load(html);
 
@@ -172,11 +295,11 @@ router.post('/generateContent', function (req, res) {
                 image_re3.push(image[0]);
 
             }
-        }); 
+        }); */
 
-    }
+    //}
 
-    if (list.length <= 4){
+    /*if (list.length <= 4){
     waitUntil()
         .interval(6000)
         .times(1)
@@ -198,11 +321,14 @@ router.post('/generateContent', function (req, res) {
             eventEmitter.emit('generate');
             res.end('Complete!!!');
         });
-    }
+    }  */
 })
 
 
 eventEmitter.on('generate', function () {
+    console.log(title_re1);
+    console.log(title_re2);
+    console.log(title_re3);
     xml = "<?xml version='1.0' encoding='UTF-8' ?><articles><UUID>";
     xml += rand;
     xml += "</UUID><time>";
