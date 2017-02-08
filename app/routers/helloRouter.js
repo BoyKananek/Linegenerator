@@ -1,13 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var cheerio = require('cheerio');
-var request = require('request');
+var Promise = require('bluebird');
+//var request = require('request');
+var request = Promise.promisify(require("request"));
 var uuid = require('uuid');
 var events = require('events');
 var fs = require('fs');
 var async = require('async');
 var waitUntil = require('wait-until');
-
 var eventEmitter = new events.EventEmitter();
 //main content
 /*
@@ -48,9 +49,11 @@ var url_re3 = new Array();
 var title_re3 = new Array();
 var image_re3 = new Array();
 
+
+
 router.post('/generateContent', function (req, res) {
     //prepare process
-   
+
     rand = uuid.v4();
     currentTime = new Date().getTime();
     xml = "";
@@ -59,7 +62,7 @@ router.post('/generateContent', function (req, res) {
     titles = [];
     categories = [];
     images = [];
-    contents=[];
+    contents = [];
     url_re1 = [];
     title_re1 = [];
     image_re1 = [];
@@ -71,6 +74,7 @@ router.post('/generateContent', function (req, res) {
     image_re3 = [];
     list = req.body.data;
 
+
     //processing
     for (var i = 0; i < list.length; i++) {
         urls.push(list[i].url);
@@ -80,229 +84,121 @@ router.post('/generateContent', function (req, res) {
         shortlinks.push(list[i].shortlink);
     }
 
-    async.series([function(callback){
-        async.each(list,function(eachlist,callback){
-            async.series([
-                function(callback){
-                    setTimeout(function(){
-                        request(eachlist.url, function (err, res, html) {
-                            if (!err) {
-                                var $ = cheerio.load(html);
-                                //find title
-                                var pre_title = $("div.content-column h1").map(function () {
-                                    return $(this).text();
-                                }).toArray();
-                                titles.push(pre_title[0]);
-                                console.log(pre_title[0]);
-                                //find category
-                                var pre_category = $("meta[property='og:url']").map(function () {
-                                    return $(this).attr('content');
-                                }).toArray();
-                                var temp = pre_category[0];
-                                var cat = temp.substr(36);
-                                var sub = cat.split("/");
-                                categories.push(sub[1]);
-                                console.log(sub[1]);
-                                
-                                //find image url
-                                var pre_image = $("div.image-holder img").map(function () {
-                                    return $(this).attr('src');
-                                }).toArray();
-                                
-                                images.push(pre_image[0]);
+    //request main content in hello website
+    var getMain = function (requestCountMain) {
+        if (requestCountMain === list.length) {
+            return;
+        } else {
+            request(urls[requestCountMain], function (err, res, html) {
+                if (!err) {
+                    var $ = cheerio.load(html);
+                    //find title
+                    var pre_title = $("div.content-column h1").map(function () {
+                        return $(this).text();
+                    }).toArray();
+                    titles.push(pre_title[0]);
+                    console.log(pre_title[0]);
+                    //find category
+                    var pre_category = $("meta[property='og:url']").map(function () {
+                        return $(this).attr('content');
+                    }).toArray();
+                    var temp = pre_category[0];
+                    var cat = temp.substr(36);
+                    var sub = cat.split("/");
+                    categories.push(sub[1]);
+                    //console.log(sub[1]);
 
-                                //find content 
-                                var pre_content = $("div.article-content").remove("aside.mashsh-container").map(function () {
-                                    return $(this).html();
-                                }).toArray();
-                                
-                                contents.push(pre_content[0]); 
-                                console.log('Main');
-                            }
-                            callback();
-                        })
-                     
-                    },1000);
-                    
+                    //find image url
+                    var pre_image = $("div.image-holder img").map(function () {
+                        return $(this).attr('src');
+                    }).toArray();
 
-                },function(callback){
-                    setTimeout(function(){
-                        request(eachlist.recommended1, function (err, res, html) {
-                            if (!err) {
-                                var $ = cheerio.load(html);
-                                var title = $("div.content-column h1").map(function () {
-                                    return $(this).text();
-                                }).toArray();
-                                title_re1.push(title[0]);
-                                var image = $("div.image-holder img").map(function () {
-                                    return $(this).attr('src');
-                                }).toArray();
-                                image_re1.push(image[0]);
-                                console.log('Rec 1');
-                                console.log(title[0]);
-                                
-                            }
-                            callback();
-                        });
-                        
-                    },1000);
-                    
+                    images.push(pre_image[0]);
 
-                },function(callback){
-                    setTimeout(function(){
-                        request(eachlist.recommended2, function (err, res, html) {
-                            if (!err) {
-                                var $ = cheerio.load(html);
-                                var title = $("div.content-column h1").map(function () {
-                                    return $(this).text();
-                                }).toArray();
-                                title_re2.push(title[0]);
-                                var image = $("div.image-holder img").map(function () {
-                                    return $(this).attr('src');
-                                }).toArray();
-                                image_re2.push(image[0]);
-                                console.log('Rec 2');
-                                console.log(title[0]);
-                            }
-                            callback();
-                        });
-                        
-                    },1000);
-                },function(callback){
-                    setTimeout(function(){
-                        request(eachlist.recommended3, function (err, res, html) {
-                            if (!err) {
-                                var $ = cheerio.load(html);
-                                var title = $("div.content-column h1").map(function () {
-                                    return $(this).text();
-                                }).toArray();
-                                title_re3.push(title[0]);
-                                var image = $("div.image-holder img").map(function () {
-                                    return $(this).attr('src');
-                                }).toArray();
-                                image_re3.push(image[0]);
-                                console.log('Rec 3');
-                                console.log(title[0]);
-                            }
-                            callback();
-                        });
-                        
-                    },1000);
+                    //find content 
+                    var pre_content = $("div.article-content").remove("aside.mashsh-container").map(function () {
+                        return $(this).html();
+                    }).toArray();
+
+                    contents.push(pre_content[0]);
+                    console.log('Main ');
                 }
-            ])
-        });
-        callback();
-    },function(callback){
-        setTimeout(function(){
-            console.log("create xml file");
-            eventEmitter.emit('generate');
-            res.end('Complete!!!');
-        },4000*list.length);
-    }]);
+                return getMain(requestCountMain + 1);
+            });
+        }
+    }
+    var getRecommended1 = function (requestCountRe1) {
+        if (requestCountRe1 === list.length) {
+            return;
+        } else {
+            request(urls[requestCountRe1], function (err, res, html) {
+                if (!err) {
+                    var $ = cheerio.load(html);
+                    var title = $("div.content-column h1").map(function () {
+                        return $(this).text();
+                    }).toArray();
+                    title_re1.push(title[0]);
+                    var image = $("div.image-holder img").map(function () {
+                        return $(this).attr('src');
+                    }).toArray();
+                    image_re1.push(image[0]);
+                    console.log('Rec 1');
+                }
+                return getRecommended1(requestCountRe1 + 1);
+            });
+        }
+    }
+    var getRecommended2 = function (requestCountRe2) {
+        if (requestCountRe2 === list.length) {
+            return;
+        } else {
+            request(urls[requestCountRe2], function (err, res, html) {
+                if (!err) {
+                    var $ = cheerio.load(html);
+                    var title = $("div.content-column h1").map(function () {
+                        return $(this).text();
+                    }).toArray();
+                    title_re2.push(title[0]);
+                    var image = $("div.image-holder img").map(function () {
+                        return $(this).attr('src');
+                    }).toArray();
+                    image_re2.push(image[0]);
+                    console.log('Rec 2');
+                }
+                return getRecommended2(requestCountRe2 + 1);
+            });
+        }
+    }
+    var getRecommended3 = function (requestCountRe3) {
+        if (requestCountRe3 === list.length) {
+            return;
+        } else {
+            request(urls[requestCountRe3], function (err, res, html) {
+                if (!err) {
+                    var $ = cheerio.load(html);
+                    var title = $("div.content-column h1").map(function () {
+                        return $(this).text();
+                    }).toArray();
+                    title_re3.push(title[0]);
+                    var image = $("div.image-holder img").map(function () {
+                        return $(this).attr('src');
+                    }).toArray();
+                    image_re3.push(image[0]);
+                    console.log('Rec 1');
+                }
+                return getRecommended3(requestCountRe3 + 1);
+            });
+        }
+    }
 
+    getMain(0);
+    getRecommended1(0);
+    getRecommended2(0);
+    getRecommended3(0);
 
-    //all redo it again in hello website
-    //for (var i = 0; i < list.length; i++) {
-        //console.log("Request for content " + (i+1));
-    
-        /*request(urls[i], function (err, res, html) {
-            if (!err) {
-                var $ = cheerio.load(html);
-
-                //find title
-                var pre_title = $("div.content-column h1").map(function () {
-                    return $(this).text();
-                }).toArray();
-               
-                titles.push(pre_title[0]);
-
-                //find category
-                var pre_category = $("meta[property='og:url']").map(function () {
-                    return $(this).attr('content');
-                }).toArray();
-                var temp = pre_category[0];
-                var cat = temp.substr(33);
-                var sub = cat.split("/");
-                categories.push(sub[0]);
-                
-                //find image url
-                var pre_image = $("div.image-holder img").map(function () {
-                    return $(this).attr('src');
-                }).toArray();
-                
-                images.push(pre_image[0]);
-
-                //find content 
-                var pre_content = $("div.article-content").remove("aside.mashsh-container").map(function () {
-                    return $(this).html();
-                }).toArray();
-                
-                contents.push(pre_content[0]); 
-                
-            }
-        })
-
-
-        request(url_re1[i], function (err, res, html) {
-            if (!err) {
-                var $ = cheerio.load(html);
-                var title = $("div.content-column h1").map(function () {
-                    return $(this).text();
-                }).toArray();
-                title_re1.push(title[0]);
-               
-                var image = $("div.image-holder img").map(function () {
-                    return $(this).attr('src');
-                }).toArray();
-                image_re1.push(image[0]);
-
-            }
-        });
-
-        //recommended2
-
-
-        request(url_re2[i], function (err, res, html) {
-            if (!err) {
-                var $ = cheerio.load(html);
-                var title = $("div.content-column h1").map(function () {
-                    return $(this).text();
-                }).toArray();
-                title_re2.push(title[0]);
-               
-                var image = $("div.image-holder img").map(function () {
-                    return $(this).attr('src');
-                }).toArray();
-                image_re2.push(image[0]);
-
-            }
-        });
-
-        //recommended3
-
-
-        request(url_re3[i], function (err, res, html) {
-            if (!err) {
-                var $ = cheerio.load(html);
-                var title = $("div.content-column h1").map(function () {
-                    return $(this).text();
-                }).toArray();
-                title_re3.push(title[0]);
-               
-                var image = $("div.image-holder img").map(function () {
-                    return $(this).attr('src');
-                }).toArray();
-                image_re3.push(image[0]);
-
-            }
-        }); */
-
-    //}
-
-    /*if (list.length <= 4){
     waitUntil()
-        .interval(6000)
-        .times(1)
+        .interval(2000)
+        .times(list.length)
         .condition(function () {
             //nothing
         })
@@ -310,25 +206,24 @@ router.post('/generateContent', function (req, res) {
             eventEmitter.emit('generate');
             res.end('Complete!!!');
         });
-    }else{
-        waitUntil()
-        .interval(10000)
-        .times(1)
-        .condition(function () {
-            //nothing
-        })
-        .done(function () {
-            eventEmitter.emit('generate');
-            res.end('Complete!!!');
-        });
-    }  */
 })
 
 
 eventEmitter.on('generate', function () {
+    console.log("main title");
+    console.log(titles);
+    console.log("main url");
+    console.log(urls);
+    console.log("recommended1 url");
+    console.log(url_re1);
     console.log(title_re1);
+    console.log("recommended2 url");
+    console.log(url_re2);
     console.log(title_re2);
+    console.log("recommended3 url");
+    console.log(url_re3);
     console.log(title_re3);
+
     xml = "<?xml version='1.0' encoding='UTF-8' ?><articles><UUID>";
     xml += rand;
     xml += "</UUID><time>";
@@ -358,7 +253,6 @@ eventEmitter.on('generate', function () {
         xml += "</recommendArticles><author>hellomagazinethailand.com</author>";
         xml += "<sourceUrl><![CDATA[" + urls[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></sourceUrl></article>"
 
-        
     }
     xml += "</articles>";
     fs.truncate('./public/hello_linetoday.xml', 0, function (err) {
