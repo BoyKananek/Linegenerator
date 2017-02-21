@@ -83,7 +83,7 @@
             </div>
             <br>
             <center>
-              <button type="button" class="btn btn-green btn-lg" onclick="submit();">Submit</button></center>
+              <button type="button" id="submitBn" class="btn btn-green btn-lg" onclick="submit();">Submit</button></center>
             <div class="download-here">
             </div>
         </div>
@@ -123,6 +123,7 @@
         }
     }
     function submit(){
+        document.getElementById('submitBn').disabled = 'disabled';
         var json = {
             "data" : []
         };
@@ -164,6 +165,7 @@
         function(data,status){
             alert(data);
             json = null;
+            document.getElementById('submitBn').disabled = '';
             for(var i=0;i< count ;i++){
                 document.getElementById("article"+(i+1)).value = "";
                 document.getElementById("c_id"+(i+1)).value = "";
