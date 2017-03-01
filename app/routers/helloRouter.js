@@ -1,16 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var cheerio = require('cheerio');
-var Promise = require('bluebird');
-//var request = require('request');
-var request = Promise.promisify(require("request"));
+var request = require('request');
 var uuid = require('uuid');
 var events = require('events');
 var fs = require('fs');
-var async = require('async');
 var waitUntil = require('wait-until');
 var eventEmitter = new events.EventEmitter();
-var sync = require('synchronize');
+
 //main content
 /*
     //POST METHOD

@@ -5,7 +5,6 @@ var request = require('request');
 var uuid = require('uuid');
 var events = require('events');
 var fs = require('fs');
-var async = require('async');
 var waitUntil = require('wait-until');
 
 var eventEmitter = new events.EventEmitter();
