@@ -83,7 +83,7 @@ router.post('/generateContent', function (req, res) {
 
     var getMain = function (requestCountMain) {
         if (requestCountMain === list.length) {
-            return;
+            return getRecommended1(0);
         } else {
             request(urls[requestCountMain], function (err, res, html) {
                 if (!err) {
@@ -138,7 +138,7 @@ router.post('/generateContent', function (req, res) {
 
     var getRecommended1 = function (requestCountRe1) {
         if (requestCountRe1 === list.length) {
-            return;
+            return getRecommended2(0);
         } else {
             request(url_re1[requestCountRe1], function (err, res, html) {
                 if (!err) {
@@ -163,7 +163,7 @@ router.post('/generateContent', function (req, res) {
 
     var getRecommended2 = function (requestCountRe2) {
         if (requestCountRe2 === list.length) {
-            return;
+            return getRecommended3(0);
         } else {
             request(url_re2[requestCountRe2], function (err, res, html) {
                 if (!err) {
@@ -187,7 +187,7 @@ router.post('/generateContent', function (req, res) {
 
     var getRecommended3 = function (requestCountRe3) {
         if (requestCountRe3 === list.length) {
-            return;
+            return lastfunction();
         } else {
             request(url_re3[requestCountRe3], function (err, res, html) {
                 if (!err) {
@@ -207,9 +207,13 @@ router.post('/generateContent', function (req, res) {
             });
         }
     }
+    var lastfunction = function(){
+        eventEmitter.emit('generate');
+        res.end('Complete!!!');
+    }
 
     getMain(0);
-    getRecommended1(0);
+    /*getRecommended1(0);
     getRecommended2(0);
     getRecommended3(0);
 
@@ -222,137 +226,8 @@ router.post('/generateContent', function (req, res) {
         .done(function () {
             eventEmitter.emit('generate');
             res.end('Complete!!!');
-        });
+        });*/
 
-    /*for (var i = 0; i < list.length; i++) {
-        console.log("Request for content " + (i + 1));
-        request(urls[i], function (err, res, html) {
-            if (!err) {
-                var $ = cheerio.load(html);
-                //find shortlink
-                var pre_shortlink = $("link[rel='shortlink']").map(function () {
-                    return $(this).attr('href');
-                }).toArray();
-                var temp = pre_shortlink[0];
-                shortlinks.push(temp.substr(24));
-
-                //find title
-                var pre_title = $("h1.article-title").map(function () {
-                    return $(this).text();
-                }).toArray();
-                console.log(pre_title[0]);
-                titles.push(pre_title[0]);
-
-                //find category
-                var pre_category = $("div.breadcrumb a[rel='category tag']").map(function () {
-                    return $(this).text();
-                }).toArray();
-                console.log(pre_category[0]);
-                if(pre_category[0].includes("&")){
-                    pre_category[0] = pre_category[0].replace("&","&amp;");
-                    console.log(pre_category[0]);
-                    categories.push(pre_category[0]);
-                }
-                else{
-                    categories.push(pre_category[0]);
-                }
-
-                //find image url
-                var pre_image = $("img.attachment-banner-image").map(function () {
-                    return $(this).attr('src');
-                }).toArray();
-                images.push(pre_image[0]);
-
-                //find content 
-                var pre_content = $("div.article-detail div.col-md-11").remove("aside.mashsh-container").map(function () {
-                    return $(this).html();
-                }).toArray();
-                var content = pre_content[0].split("</aside>");
-                contents.push(content[1]);
-
-            }
-        })
-
-
-        request(url_re1[i], function (err, res, html) {
-            if (!err) {
-                var $ = cheerio.load(html);
-                var title = $("h1.article-title").map(function () {
-                    return $(this).text();
-                }).toArray();
-                title_re1.push(title[0]);
-
-                var image = $("img.attachment-banner-image").map(function () {
-                    return $(this).attr('src');
-                }).toArray();
-                image_re1.push(image[0]);
-
-            }
-        });
-
-        //recommended2
-
-
-        request(url_re2[i], function (err, res, html) {
-            if (!err) {
-                var $ = cheerio.load(html);
-                var title = $("h1.article-title").map(function () {
-                    return $(this).text();
-                }).toArray();
-                title_re2.push(title[0]);
-
-                var image = $("img.attachment-banner-image").map(function () {
-                    return $(this).attr('src');
-                }).toArray();
-                image_re2.push(image[0]);
-
-            }
-        });
-
-        //recommended3
-
-
-        request(url_re3[i], function (err, res, html) {
-            if (!err) {
-                var $ = cheerio.load(html);
-                var title = $("h1.article-title").map(function () {
-                    return $(this).text();
-                }).toArray();
-                title_re3.push(title[0]);
-
-                var image = $("img.attachment-banner-image").map(function () {
-                    return $(this).attr('src');
-                }).toArray();
-                image_re3.push(image[0]);
-
-            }
-        });
-
-    }
-    if (list.length <= 4) {
-        waitUntil()
-            .interval(6000)
-            .times(1)
-            .condition(function () {
-                //nothing
-            })
-            .done(function () {
-                eventEmitter.emit('generate');
-                res.end('Complete!!!');
-            });
-    } else {
-        waitUntil()
-            .interval(10000)
-            .times(1)
-            .condition(function () {
-                //nothing
-            })
-            .done(function () {
-                eventEmitter.emit('generate');
-                res.end('Complete!!!');
-            });
-    }
-    */
 
 })
 

@@ -10,6 +10,7 @@ var fs = require('fs');
 var async = require('async');
 var waitUntil = require('wait-until');
 var eventEmitter = new events.EventEmitter();
+var sync = require('synchronize');
 //main content
 /*
     //POST METHOD
@@ -54,6 +55,8 @@ var image_re3 = new Array();
 router.post('/generateContent', function (req, res) {
     //prepare process
 
+    
+
     rand = uuid.v4();
     currentTime = new Date().getTime();
     xml = "";
@@ -87,7 +90,8 @@ router.post('/generateContent', function (req, res) {
     //request main content in hello website
     var getMain = function (requestCountMain) {
         if (requestCountMain === list.length) {
-            return;
+            return getRecommended1(0);
+           
         } else {
             request(urls[requestCountMain], function (err, res, html) {
                 if (!err) {
@@ -129,7 +133,8 @@ router.post('/generateContent', function (req, res) {
     }
     var getRecommended1 = function (requestCountRe1) {
         if (requestCountRe1 === list.length) {
-            return;
+            return getRecommended2(0);
+            
         } else {
             request(urls[requestCountRe1], function (err, res, html) {
                 if (!err) {
@@ -150,7 +155,8 @@ router.post('/generateContent', function (req, res) {
     }
     var getRecommended2 = function (requestCountRe2) {
         if (requestCountRe2 === list.length) {
-            return;
+            return getRecommended3(0);
+            
         } else {
             request(urls[requestCountRe2], function (err, res, html) {
                 if (!err) {
@@ -171,7 +177,8 @@ router.post('/generateContent', function (req, res) {
     }
     var getRecommended3 = function (requestCountRe3) {
         if (requestCountRe3 === list.length) {
-            return;
+            return lastfunction();
+            
         } else {
             request(urls[requestCountRe3], function (err, res, html) {
                 if (!err) {
@@ -184,19 +191,25 @@ router.post('/generateContent', function (req, res) {
                         return $(this).attr('src');
                     }).toArray();
                     image_re3.push(image[0]);
-                    console.log('Rec 1');
+                    console.log('Rec 3');
                 }
                 return getRecommended3(requestCountRe3 + 1);
             });
         }
     }
-
+    var lastfunction = function(){
+        eventEmitter.emit('generate');
+        res.end('Complete!!!');
+    }
+    
     getMain(0);
-    getRecommended1(0);
-    getRecommended2(0);
-    getRecommended3(0);
+    
+    //getMain(0);
+    //getRecommended1(0);
+    //getRecommended2(0);
+    //getRecommended3(0);
 
-    waitUntil()
+    /*(waitUntil()
         .interval(5500)
         .times(list.length)
         .condition(function () {
@@ -205,7 +218,7 @@ router.post('/generateContent', function (req, res) {
         .done(function () {
             eventEmitter.emit('generate');
             res.end('Complete!!!');
-        });
+        });*/
 })
 
 
