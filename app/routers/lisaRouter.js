@@ -219,7 +219,7 @@ router.post('/generateContent', function (req, res) {
     getRecommended3(0);
 
      waitUntil()
-        .interval(3000)
+        .interval(2000)
         .times(list.length)
         .condition(function () {
             //nothing
