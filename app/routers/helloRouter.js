@@ -87,7 +87,7 @@ router.post('/generateContent', function (req, res) {
     //request main content in hello website
     var getMain = function (requestCountMain) {
         if (requestCountMain === list.length) {
-            return getRecommended1(0);
+            return;
            
         } else {
             request(urls[requestCountMain], function (err, res, html) {
@@ -130,7 +130,7 @@ router.post('/generateContent', function (req, res) {
     }
     var getRecommended1 = function (requestCountRe1) {
         if (requestCountRe1 === list.length) {
-            return getRecommended2(0);
+            return ;
             
         } else {
             request(urls[requestCountRe1], function (err, res, html) {
@@ -152,7 +152,7 @@ router.post('/generateContent', function (req, res) {
     }
     var getRecommended2 = function (requestCountRe2) {
         if (requestCountRe2 === list.length) {
-            return getRecommended3(0);
+            return;
             
         } else {
             request(urls[requestCountRe2], function (err, res, html) {
@@ -174,7 +174,7 @@ router.post('/generateContent', function (req, res) {
     }
     var getRecommended3 = function (requestCountRe3) {
         if (requestCountRe3 === list.length) {
-            return lastfunction();
+            return ;
             
         } else {
             request(urls[requestCountRe3], function (err, res, html) {
@@ -199,15 +199,15 @@ router.post('/generateContent', function (req, res) {
         res.end('Complete!!!');
     }
     
-    getMain(0);
     
-    //getMain(0);
-    //getRecommended1(0);
-    //getRecommended2(0);
-    //getRecommended3(0);
+    
+    getMain(0);
+    getRecommended1(0);
+    getRecommended2(0);
+    getRecommended3(0);
 
-    /*(waitUntil()
-        .interval(5500)
+    waitUntil()
+        .interval(6000)
         .times(list.length)
         .condition(function () {
             //nothing
@@ -215,7 +215,7 @@ router.post('/generateContent', function (req, res) {
         .done(function () {
             eventEmitter.emit('generate');
             res.end('Complete!!!');
-        });*/
+        });
 })
 
 

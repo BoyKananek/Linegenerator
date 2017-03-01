@@ -6,6 +6,7 @@ var uuid = require('uuid');
 var events = require('events');
 var fs = require('fs');
 var waitUntil = require('wait-until');
+var Sync = require('syncho');
 
 var eventEmitter = new events.EventEmitter();
 //main content
@@ -82,7 +83,7 @@ router.post('/generateContent', function (req, res) {
 
     var getMain = function (requestCountMain) {
         if (requestCountMain === list.length) {
-            return getRecommended1(0);
+            return;
         } else {
             request(urls[requestCountMain], function (err, res, html) {
                 if (!err) {
@@ -137,7 +138,7 @@ router.post('/generateContent', function (req, res) {
 
     var getRecommended1 = function (requestCountRe1) {
         if (requestCountRe1 === list.length) {
-            return getRecommended2(0);
+            return ;
         } else {
             request(url_re1[requestCountRe1], function (err, res, html) {
                 if (!err) {
@@ -162,7 +163,7 @@ router.post('/generateContent', function (req, res) {
 
     var getRecommended2 = function (requestCountRe2) {
         if (requestCountRe2 === list.length) {
-            return getRecommended3(0);
+            return ;
         } else {
             request(url_re2[requestCountRe2], function (err, res, html) {
                 if (!err) {
@@ -186,7 +187,7 @@ router.post('/generateContent', function (req, res) {
 
     var getRecommended3 = function (requestCountRe3) {
         if (requestCountRe3 === list.length) {
-            return lastfunction();
+            return;
         } else {
             request(url_re3[requestCountRe3], function (err, res, html) {
                 if (!err) {
@@ -210,9 +211,11 @@ router.post('/generateContent', function (req, res) {
         eventEmitter.emit('generate');
         res.end('Complete!!!');
     }
+    
 
+    
     getMain(0);
-    /*getRecommended1(0);
+    getRecommended1(0);
     getRecommended2(0);
     getRecommended3(0);
 
@@ -225,7 +228,7 @@ router.post('/generateContent', function (req, res) {
         .done(function () {
             eventEmitter.emit('generate');
             res.end('Complete!!!');
-        });*/
+        });
 
 
 })
