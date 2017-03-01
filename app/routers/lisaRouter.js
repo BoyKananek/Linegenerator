@@ -6,7 +6,6 @@ var uuid = require('uuid');
 var events = require('events');
 var fs = require('fs');
 var waitUntil = require('wait-until');
-var Sync = require('syncho');
 
 var eventEmitter = new events.EventEmitter();
 //main content
