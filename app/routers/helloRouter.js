@@ -133,7 +133,7 @@ router.post('/generateContent', function (req, res) {
             return ;
             
         } else {
-            request(urls[requestCountRe1], function (err, res, html) {
+            request(url_re1[requestCountRe1], function (err, res, html) {
                 if (!err) {
                     var $ = cheerio.load(html);
                     var title = $("div.content-column h1").map(function () {
@@ -145,6 +145,7 @@ router.post('/generateContent', function (req, res) {
                     }).toArray();
                     image_re1.push(image[0]);
                     console.log('Rec 1');
+                    console.log(title[0]);
                 }
                 return getRecommended1(requestCountRe1 + 1);
             });
@@ -155,7 +156,7 @@ router.post('/generateContent', function (req, res) {
             return ;
             
         } else {
-            request(urls[requestCountRe2], function (err, res, html) {
+            request(url_re2[requestCountRe2], function (err, res, html) {
                 if (!err) {
                     var $ = cheerio.load(html);
                     var title = $("div.content-column h1").map(function () {
@@ -167,6 +168,7 @@ router.post('/generateContent', function (req, res) {
                     }).toArray();
                     image_re2.push(image[0]);
                     console.log('Rec 2');
+                    console.log(title[0]);
                 }
                 return getRecommended2(requestCountRe2 + 1);
             });
@@ -177,7 +179,7 @@ router.post('/generateContent', function (req, res) {
             return ;
             
         } else {
-            request(urls[requestCountRe3], function (err, res, html) {
+            request(url_re3[requestCountRe3], function (err, res, html) {
                 if (!err) {
                     var $ = cheerio.load(html);
                     var title = $("div.content-column h1").map(function () {
@@ -189,6 +191,7 @@ router.post('/generateContent', function (req, res) {
                     }).toArray();
                     image_re3.push(image[0]);
                     console.log('Rec 3');
+                    console.log(title[0]);
                 }
                 return getRecommended3(requestCountRe3 + 1);
             });
