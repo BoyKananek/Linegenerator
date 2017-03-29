@@ -104,10 +104,9 @@ router.post('/generateContent', function (req, res) {
                         return $(this).attr('content');
                     }).toArray();
                     var temp = pre_category[0];
-                    var cat = temp.substr(36);
-                    var sub = cat.split("/");
-                    categories.push(sub[1]);
-                    //console.log(sub[1]);
+                    var sub = temp.split("/");
+                    categories.push(sub[3]);
+                    
 
                     //find image url
                     var pre_image = $("div.image-holder img").map(function () {
