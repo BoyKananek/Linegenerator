@@ -6,6 +6,8 @@ var uuid = require('uuid');
 var events = require('events');
 var fs = require('fs');
 var waitUntil = require('wait-until');
+var Client = require('ssh2-sftp-client');
+var sftp = new Client();
 
 var eventEmitter = new events.EventEmitter();
 //main content
@@ -210,9 +212,6 @@ router.post('/generateContent', function (req, res) {
         eventEmitter.emit('generate');
         res.end('Complete!!!');
     }
-    
-
-    
     getMain(0);
     /*getRecommended1(0);
     getRecommended2(0);
@@ -287,6 +286,19 @@ eventEmitter.on('generate', function () {
                 if (err) {
                     return console.log(err);
                 }
+                sftp.connect({
+                    host: 'lisa_server',
+                    port : 22,
+                    username : 'username',
+                    privateKey : fs.readFileSync('privateKey')
+                }).then(()=> {
+                    sftp.put('./public/lisa_linetoday.xml','/home/linetoday/upload/lisa_linetoday.xml',"zlib");
+                    return sftp.list('/home/linetoday/upload');
+                }).then((data)=>{
+                    console.log(data,'the data info');
+                }).then((err)=> {
+                    console.log(err, 'catch error');
+                });
                 console.log('Save!');
             });
         }
@@ -294,6 +306,5 @@ eventEmitter.on('generate', function () {
 
 
 })
-
 
 module.exports = router;
