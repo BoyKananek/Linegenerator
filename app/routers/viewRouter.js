@@ -15,10 +15,10 @@ router.get("/hello_linegenerate",function(req,res){
     var file = './public/lisa_linetoday.xml';
     res.download(file); 
 });*/
-router.get("/hello_download",function(req,res){
+/*router.get("/hello_download",function(req,res){
     var file = './public/hello_linetoday.xml';
     res.download(file);
-})
+})*/
 
 
 module.exports = router;

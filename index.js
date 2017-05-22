@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 
 
 var app = express();
-var port = process.env.PORT || 4000;
+var port = process.env.PORT || 3000;
 
 var lisaRouter = require('./app/routers/lisaRouter');
 var viewRouter = require('./app/routers/viewRouter');

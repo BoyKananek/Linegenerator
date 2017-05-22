@@ -7,7 +7,8 @@ var events = require('events');
 var fs = require('fs');
 var waitUntil = require('wait-until');
 var eventEmitter = new events.EventEmitter();
-
+var Client = require('ssh2-sftp-client');
+var sftp = new Client();
 //main content
 /*
     //POST METHOD
@@ -276,6 +277,19 @@ eventEmitter.on('generate', function () {
                 if (err) {
                     return console.log(err);
                 }
+                 sftp.connect({
+                    host: 'helloHostname',
+                    port : 22,
+                    username : 'usernameHello',
+                    privateKey : fs.readFileSync('privateKey')
+                }).then(()=> {
+                    sftp.put('./public/hello_linetoday.xml','/home/ubuntu/ezpublish5/web/linetoday/hello_linetoday.xml',"zlib");
+                    return sftp.list('/home/ubuntu/ezpublish5/web/linetoday');
+                }).then((data)=>{
+                    console.log(data,'the data info');
+                }).then((err)=> {
+                    console.log(err, 'catch error');
+                });
                 console.log('Save!');
             });
         }
