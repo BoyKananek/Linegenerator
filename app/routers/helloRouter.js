@@ -290,7 +290,7 @@ eventEmitter.on('generate', function () {
                     }
 
                 })
-                /*sftp.connect({
+                sftp.connect({
                     host: 'helloHostname',
                     port : 22,
                     username : 'usernameHello',
@@ -302,7 +302,7 @@ eventEmitter.on('generate', function () {
                     console.log(data,'the data info');
                 }).then((err)=> {
                     console.log(err, 'catch error');
-                });*/
+                });
                 console.log('Save!');
             });
         }
