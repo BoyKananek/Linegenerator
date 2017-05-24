@@ -8,6 +8,7 @@ var config = require('./config/database.js');
 var mongoose = require('mongoose');
 
 mongoose.connect(config.url);
+var db = mongoose.connection;
 
 var app = express();
 app.use(cookieParser());
