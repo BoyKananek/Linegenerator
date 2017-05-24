@@ -6,6 +6,7 @@ var uuid = require('uuid');
 var events = require('events');
 var fs = require('fs');
 var waitUntil = require('wait-until');
+var Log = require('../models/log');
 var Client = require('ssh2-sftp-client');
 var sftp = new Client();
 
@@ -286,7 +287,19 @@ eventEmitter.on('generate', function () {
                 if (err) {
                     return console.log(err);
                 }
-                sftp.connect({
+                var newlog = new Log();
+                newlog.title = 'Lisaguru';
+                newlog.xmlfile = xml;
+                newlog.uploadDate = new Date();
+                newlog.save(function(err){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        console.log("Done!");
+                    }
+
+                })
+                /*sftp.connect({
                     host: 'lisa_server',
                     port : 22,
                     username : 'username',
@@ -298,7 +311,7 @@ eventEmitter.on('generate', function () {
                     console.log(data,'the data info');
                 }).then((err)=> {
                     console.log(err, 'catch error');
-                });
+                });*/
                 console.log('Save!');
             });
         }
