@@ -218,7 +218,7 @@ router.post('/generateContent', function (req, res) {
         })
         .done(function () {
             eventEmitter.emit('generate');
-            res.end('Complete!!!');
+            res.end('Completed !, Please wait for Linebot to collect the content at least 30 minutes before next submission.');
         });
 })
 
