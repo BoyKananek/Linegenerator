@@ -9,10 +9,19 @@
     <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
 
     <!-- load bootstrap css -->
+    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
     <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> -->
-
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <!-- load fontawesome -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <style>
+      .dataTables_wrapper label {
+        font-weight: 200;
+        margin: 0px;
+      }
+    </style>
 </head>
 <body>
     <header id="top" class="header">
@@ -41,13 +50,16 @@
       <div class="clearfix"></div>
     </header>
     <div class="main">
-        <table class="table table-condensed">
-        <tr>
-            <td> ID </td>
-            <td> Title </td>
-            <td> Upload Time </td>
-            <td> XML Viewer </td>
-        </tr>
+        <table class="table table-condensed" id="data">
+        <thead>
+          <tr>
+              <td> ID </td>
+              <td> Title </td>
+              <td> Upload Time </td>
+              <td> XML Viewer </td>
+          </tr>
+        </thead>
+        <tbody>
         <% for(var i=0; i< log.length;i++){ %>
         <tr>
             <td> <%= log[i]._id %> </td>
@@ -56,10 +68,11 @@
             <td> <a href="/xmlViewer/<%=log[i]._id%>"> xml </a> </td>
         </tr>
         <% } %>
+        </tbody>
         </table>
 
     </div>
-    <footer class="footer navbar-fixed-bottom">
+    <footer class="footer">
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">
@@ -69,6 +82,11 @@
       </div>
     </footer>
 </body>
-
+<script>
+  $(document).ready(function() {
+    $('#data').dataTable( {
+    } );
+} );
+</script>
 </html>
 
