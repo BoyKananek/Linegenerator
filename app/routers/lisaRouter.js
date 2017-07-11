@@ -290,6 +290,7 @@ eventEmitter.on('generate', function () {
                 var newlog = new Log();
                 newlog.title = 'Lisaguru';
                 newlog.xmlfile = xml;
+                newlog.nArticle = list.length;
                 newlog.uploadDate = new Date();
                 newlog.save(function(err){
                     if(err){
@@ -299,7 +300,7 @@ eventEmitter.on('generate', function () {
                     }
 
                 })
-                sftp.connect({
+                /*sftp.connect({
                     host: 'lisa_server',
                     port : 22,
                     username : 'username',
@@ -311,7 +312,7 @@ eventEmitter.on('generate', function () {
                     console.log(data,'the data info');
                 }).then((err)=> {
                     console.log(err, 'catch error');
-                });
+                });*/
                 console.log('Save!');
             });
         }

@@ -50,6 +50,7 @@
               <td> ID </td>
               <td> Title </td>
               <td> Upload Time </td>
+              <td> Number of Article </td>
               <td> XML Viewer </td>
           </tr>
         </thead>
@@ -59,6 +60,7 @@
             <td> <%= log[i]._id %> </td>
             <td> <%= log[i].title %> </td>
             <td> <%= log[i].uploadDate %> </td>
+            <td> <%= log[i].nArticle %> </td>
             <td> <a href="/xmlViewer/<%=log[i]._id%>"> xml </a> </td>
         </tr>
         <% } %>
@@ -80,7 +82,7 @@
 <script>
   $(document).ready(function() {
     $('#data').dataTable( {
-       "order": [[ 3, "asc" ]]
+       "order": [[ 3, "des" ]]
     } );
 } );
 </script>

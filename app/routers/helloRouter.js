@@ -281,6 +281,7 @@ eventEmitter.on('generate', function () {
                 var newlog = new Log();
                 newlog.title = 'Hellomagazine';
                 newlog.xmlfile = xml;
+                newlog.nArticle = list.length;
                 newlog.uploadDate = new Date();
                 newlog.save(function(err){
                     if(err){
@@ -290,7 +291,7 @@ eventEmitter.on('generate', function () {
                     }
 
                 })
-                sftp.connect({
+                /*sftp.connect({
                     host: 'helloHostname',
                     port : 22,
                     username : 'usernameHello',
@@ -302,7 +303,7 @@ eventEmitter.on('generate', function () {
                     console.log(data,'the data info');
                 }).then((err)=> {
                     console.log(err, 'catch error');
-                });
+                });*/
                 console.log('Save!');
             });
         }
