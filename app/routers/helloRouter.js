@@ -10,6 +10,82 @@ var Log = require('../models/log');
 var eventEmitter = new events.EventEmitter();
 var Client = require('ssh2-sftp-client');
 var sftp = new Client();
+
+function generated(){
+    console.log("main title");
+    console.log(titles);
+    console.log("main url");
+    console.log(urls);
+    console.log("recommended1 url");
+    console.log(url_re1);
+    console.log(title_re1);
+    console.log("recommended2 url");
+    console.log(url_re2);
+    console.log(title_re2);
+    console.log("recommended3 url");
+    console.log(url_re3);
+    console.log(title_re3);
+
+    xml = "<?xml version='1.0' encoding='UTF-8' ?><articles><UUID>";
+    xml += rand;
+    xml += "</UUID><time>";
+    xml += currentTime.toString() + "</time>";
+
+    for (var i = 0; i < list.length; i++) {
+        xml += "<article>";
+        xml += "<ID>" + shortlinks[i] + "</ID>";
+        xml += "<nativeCountry>TH</nativeCountry><language>th</language><publishCountries><country>TH</country></publishCountries>";
+        var time = currentTime - (360000 * (i + 1));
+        xml += "<startYmdtUnix>" + time.toString() + "</startYmdtUnix><endYmdtUnix>7274196000000</endYmdtUnix>"
+        xml += "<title><![CDATA[" + titles[i] + "]]></title>";
+        xml += "<category>" + categories[i] + "</category>";
+        xml += "<publishTimeUnix>" + time.toString() + "</publishTimeUnix>";
+        xml += "<updateTimeUnix>" + time.toString() + "</updateTimeUnix>";
+        xml += "<contents><image><url>" + images[i] + "</url><thumbnail>" + images[i] + "</thumbnail></image>";
+        xml += "<text><content><![CDATA[" + contents[i] + "]]></content></text></contents>";
+        xml += "<recommendArticles><article><title><![CDATA[" + title_re1[i] + "]]></title>";
+        xml += "<url><![CDATA[" + url_re1[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
+        xml += "<thumbnail><![CDATA[" + image_re1[i] + "]]></thumbnail></article>";
+        xml += "<article><title><![CDATA[" + title_re2[i] + "]]></title>";
+        xml += "<url><![CDATA[" + url_re2[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
+        xml += "<thumbnail><![CDATA[" + image_re2[i] + "]]></thumbnail></article>";
+        xml += "<article><title><![CDATA[" + title_re3[i] + "]]></title>";
+        xml += "<url><![CDATA[" + url_re3[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
+        xml += "<thumbnail><![CDATA[" + image_re3[i] + "]]></thumbnail></article>";
+        xml += "</recommendArticles><author>hellomagazinethailand.com</author>";
+        xml += "<sourceUrl><![CDATA[" + urls[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></sourceUrl></article>"
+
+    }
+    xml += "</articles>";
+    fs.truncate('./public/hello_linetoday.xml', 0, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("remove");
+            fs.writeFile("./public/hello_linetoday.xml", xml, { flag: 'w' }, function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+                var newlog = new Log();
+                newlog.title = 'Hellomagazine';
+                newlog.xmlfile = xml;
+                newlog.nArticle = list.length;
+                newlog.uploadDate = new Date();
+                newlog.save(function(err){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        console.log("Done!");
+                    }
+
+                })
+                
+                console.log('Save!');
+            });
+        }
+    });
+
+}
 //main content
 /*
     //POST METHOD
@@ -83,47 +159,50 @@ router.post('/generateContent', function (req, res) {
         url_re1.push(list[i].recommended1);
         url_re2.push(list[i].recommended2);
         url_re3.push(list[i].recommended3);
-        shortlinks.push(list[i].shortlink);
     }
 
     //request main content in hello website
     var getMain = function (requestCountMain) {
         if (requestCountMain === list.length) {
-            return ;
+            return getRecommended1(0);
            
         } else {
             request(urls[requestCountMain], function (err, res, html) {
                 if (!err) {
                     var $ = cheerio.load(html);
                     //find title
-                    var pre_title = $("div.content-column h1").map(function () {
+                    var pre_title = $("div.title").map(function () {
                         return $(this).text();
                     }).toArray();
                     titles.push(pre_title[0]);
-                    console.log(pre_title[0]);
                     //find category
-                    var pre_category = $("meta[property='og:url']").map(function () {
-                        return $(this).attr('content');
+                    var pre_category = $("div.post-header a").map(function () {
+                        return $(this).attr('title');
                     }).toArray();
                     var temp = pre_category[0];
-                    var sub = temp.split("/");
-                    categories.push(sub[3]);
-                    
+                    categories.push(temp);
 
                     //find image url
-                    var pre_image = $("div.image-holder img").map(function () {
+                    var pre_image = $("div.post-feature-image img.img-responsive").map(function () {
                         return $(this).attr('src');
                     }).toArray();
-
+                 
                     images.push(pre_image[0]);
 
                     //find content 
-                    var pre_content = $("div.article-content").remove("aside.mashsh-container").map(function () {
+                    var pre_content = $("div.content-wrapper article.content").map(function () {
                         return $(this).html();
                     }).toArray();
-
+                    
                     contents.push(pre_content[0]);
-                    console.log('Main ');
+
+                    //find shortlink
+                    var pre_shortlink = $("link[rel='shortlink']").map(function(){
+                        return $(this).attr('href');
+                    }).toArray();
+                    var temp = pre_shortlink[0].substr(40);
+                   
+                    shortlinks.push(temp);
                 }
                 return getMain(requestCountMain + 1);
             });
@@ -131,17 +210,17 @@ router.post('/generateContent', function (req, res) {
     }
     var getRecommended1 = function (requestCountRe1) {
         if (requestCountRe1 === list.length) {
-            return ;
+            return getRecommended2(0);
             
         } else {
             request(url_re1[requestCountRe1], function (err, res, html) {
                 if (!err) {
                     var $ = cheerio.load(html);
-                    var title = $("div.content-column h1").map(function () {
+                    var title = $("div.title").map(function () {
                         return $(this).text();
                     }).toArray();
                     title_re1.push(title[0]);
-                    var image = $("div.image-holder img").map(function () {
+                    var image = $("div.post-feature-image img.img-responsive").map(function () {
                         return $(this).attr('src');
                     }).toArray();
                     image_re1.push(image[0]);
@@ -154,17 +233,17 @@ router.post('/generateContent', function (req, res) {
     }
     var getRecommended2 = function (requestCountRe2) {
         if (requestCountRe2 === list.length) {
-            return ;
+            return getRecommended3(0);
             
         } else {
             request(url_re2[requestCountRe2], function (err, res, html) {
                 if (!err) {
                     var $ = cheerio.load(html);
-                    var title = $("div.content-column h1").map(function () {
+                    var title = $("div.title").map(function () {
                         return $(this).text();
                     }).toArray();
                     title_re2.push(title[0]);
-                    var image = $("div.image-holder img").map(function () {
+                    var image = $("div.post-feature-image img.img-responsive").map(function () {
                         return $(this).attr('src');
                     }).toArray();
                     image_re2.push(image[0]);
@@ -177,17 +256,17 @@ router.post('/generateContent', function (req, res) {
     }
     var getRecommended3 = function (requestCountRe3) {
         if (requestCountRe3 === list.length) {
-            return ;
+            return lastfunction();
             
         } else {
             request(url_re3[requestCountRe3], function (err, res, html) {
                 if (!err) {
                     var $ = cheerio.load(html);
-                    var title = $("div.content-column h1").map(function () {
+                    var title = $("div.title").map(function () {
                         return $(this).text();
                     }).toArray();
                     title_re3.push(title[0]);
-                    var image = $("div.image-holder img").map(function () {
+                    var image = $("div.post-feature-image img.img-responsive").map(function () {
                         return $(this).attr('src');
                     }).toArray();
                     image_re3.push(image[0]);
@@ -199,118 +278,14 @@ router.post('/generateContent', function (req, res) {
         }
     }
     var lastfunction = function(){
-        eventEmitter.emit('generate');
-        res.end('Complete!!!');
+        generated();
+        res.end('Completed !, Please wait for Linebot to collect the content at least 30 minutes before next submission.');
     }
-    
-    
-    //getMain(0);
     getMain(0);
-    getRecommended1(0);
-    getRecommended2(0);
-    getRecommended3(0);
-
-    waitUntil()
-        .interval(4000)
-        .times(list.length)
-        .condition(function () {
-            //nothing
-        })
-        .done(function () {
-            eventEmitter.emit('generate');
-            res.end('Completed !, Please wait for Linebot to collect the content at least 30 minutes before next submission.');
-        });
-})
-
-
-eventEmitter.on('generate', function () {
-    console.log("main title");
-    console.log(titles);
-    console.log("main url");
-    console.log(urls);
-    console.log("recommended1 url");
-    console.log(url_re1);
-    console.log(title_re1);
-    console.log("recommended2 url");
-    console.log(url_re2);
-    console.log(title_re2);
-    console.log("recommended3 url");
-    console.log(url_re3);
-    console.log(title_re3);
-
-    xml = "<?xml version='1.0' encoding='UTF-8' ?><articles><UUID>";
-    xml += rand;
-    xml += "</UUID><time>";
-    xml += currentTime.toString() + "</time>";
-
-    for (var i = 0; i < list.length; i++) {
-        xml += "<article>";
-        xml += "<ID>" + shortlinks[i] + "</ID>";
-        xml += "<nativeCountry>TH</nativeCountry><language>th</language><publishCountries><country>TH</country></publishCountries>";
-        var time = currentTime - (360000 * (i + 1));
-        xml += "<startYmdtUnix>" + time.toString() + "</startYmdtUnix><endYmdtUnix>7274196000000</endYmdtUnix>"
-        xml += "<title><![CDATA[" + titles[i] + "]]></title>";
-        xml += "<category>" + categories[i] + "</category>";
-        xml += "<publishTimeUnix>" + time.toString() + "</publishTimeUnix>";
-        xml += "<updateTimeUnix>" + time.toString() + "</updateTimeUnix>";
-        xml += "<contents><image><url>" + images[i] + "</url><thumbnail>" + images[i] + "</thumbnail></image>";
-        xml += "<text><content><![CDATA[" + contents[i] + "]]></content></text></contents>";
-        xml += "<recommendArticles><article><title><![CDATA[" + title_re1[i] + "]]></title>";
-        xml += "<url><![CDATA[" + url_re1[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
-        xml += "<thumbnail><![CDATA[" + image_re1[i] + "]]></thumbnail></article>";
-        xml += "<article><title><![CDATA[" + title_re2[i] + "]]></title>";
-        xml += "<url><![CDATA[" + url_re2[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
-        xml += "<thumbnail><![CDATA[" + image_re2[i] + "]]></thumbnail></article>";
-        xml += "<article><title><![CDATA[" + title_re3[i] + "]]></title>";
-        xml += "<url><![CDATA[" + url_re3[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></url>";
-        xml += "<thumbnail><![CDATA[" + image_re3[i] + "]]></thumbnail></article>";
-        xml += "</recommendArticles><author>hellomagazinethailand.com</author>";
-        xml += "<sourceUrl><![CDATA[" + urls[i] + "?utm_source=line&utm_medium=referral&utm_campaign=linetoday]]></sourceUrl></article>"
-
-    }
-    xml += "</articles>";
-    fs.truncate('./public/hello_linetoday.xml', 0, function (err) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("remove");
-            fs.writeFile("./public/hello_linetoday.xml", xml, { flag: 'w' }, function (err) {
-                if (err) {
-                    return console.log(err);
-                }
-                var newlog = new Log();
-                newlog.title = 'Hellomagazine';
-                newlog.xmlfile = xml;
-                newlog.nArticle = list.length;
-                newlog.uploadDate = new Date();
-                newlog.save(function(err){
-                    if(err){
-                        console.log(err);
-                    }else{
-                        console.log("Done!");
-                    }
-
-                })
-                /*sftp.connect({
-                    host: 'helloHostname',
-                    port : 22,
-                    username : 'usernameHello',
-                    privateKey : fs.readFileSync('privateKey')
-                }).then(()=> {
-                    sftp.put('./public/hello_linetoday.xml','/home/ubuntu/ezpublish5/web/linetoday/hello_linetoday.xml',"zlib");
-                    return sftp.list('/home/ubuntu/ezpublish5/web/linetoday');
-                }).then((data)=>{
-                    console.log(data,'the data info');
-                }).then((err)=> {
-                    console.log(err, 'catch error');
-                });*/
-                console.log('Save!');
-            });
-        }
-    });
-
 
 })
+
+
 
 
 module.exports = router;
